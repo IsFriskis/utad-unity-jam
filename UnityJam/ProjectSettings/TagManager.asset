@@ -41,3 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: FoggyTrees
+    uniqueID: 408882177
+    locked: 0
+  - name: FarTrees
+    uniqueID: 3912106207
+    locked: 0
+  - name: NearTrees
+    uniqueID: 1285747193
+    locked: 0
