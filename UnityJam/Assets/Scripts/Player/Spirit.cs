@@ -5,7 +5,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.Serialization;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Spirit: MonoBehaviour
 {
     
 
@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
     [SerializeField] float initialSpeed = 3.0f; //Velocidad base del personaje
     private Rigidbody2D rb;
     private Animator animator;
-    private bool isSprinting; //Esta corriendo
+    private bool isSprinting; //Se activa cuando esta corriendo
     bool isOnGround;   //Habilita la opcion de salto
     public LayerMask solidLayer; //Define la capa que se utilizara para saber si esta tocando un objeto solido y puede saltar
     private bool isAlive;
@@ -47,20 +47,19 @@ public class Player : MonoBehaviour
             isOnGround = true;
             isSprinting = false;
             Vector3 movimiento = Vector3.zero;
-            if (Input.GetKey(KeyCode.A))
+            if (Input.GetKey(KeyCode.LeftArrow))
             {
                 movimiento -= transform.right;
                 animator.SetBool("Is_Moving", true);
             }
-            if (Input.GetKey(KeyCode.D))
+            if (Input.GetKey(KeyCode.RightArrow))
             {
                 movimiento += transform.right;
                 animator.SetBool("Is_Moving", true);
             }
-            //Normallizamos el vector movimiento para mantener la misma velocidad en todas direcciones
+            //Normalizamos el vector movimiento para mantener la misma velocidad en todas direcciones
             if (movimiento.magnitude > 1.0f)
             { movimiento.Normalize(); }
-
 
             //Lanzamos un RayCast para detectar si el Player esta tocando el suelo
             if (Physics2D.Raycast(this.transform.position, Vector2.down, rayDistance, solidLayer))
@@ -77,7 +76,7 @@ public class Player : MonoBehaviour
             //Desplazamos el personaje a una velocidad
             float speed = initialSpeed;
 
-            if (Input.GetKey(KeyCode.LeftControl) && (isOnGround)) 
+            if (Input.GetKey(KeyCode.LeftControl) && (isOnGround))
             {
                 speed = initialSpeed * sprint;
                 isSprinting = true;
@@ -91,27 +90,27 @@ public class Player : MonoBehaviour
 
 
             //Llamamos a la función de salto y en el caso que este tocando el suelo le permitiremos saltar
-            if (Input.GetKeyDown(KeyCode.W))
+            if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 Jump();
             }
 
             //Llamamos a la función de ataque
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.RightControl))
             {
                 Attack();
 
             }
             if (movimiento.x > 0)
             {
-                if (Input.GetKeyDown(KeyCode.S))
+                if (Input.GetKeyDown(KeyCode.DownArrow))
                 {
                     animator.SetTrigger("Is_Rolling");
                     
                 }
             }
             //Detectamos si la vida del personaje es 0 y llamamos a la función de muerte
-            if (life <= 0)
+            if (mana <= 0)
             {
                 Death();
                 isAlive = false;
@@ -122,16 +121,16 @@ public class Player : MonoBehaviour
  
     void Jump()
     {
-       
+
         if (isOnGround)
         {
             if (isSprinting)
-            rb.AddForce(Vector2.up * (jumpForce * sprint)  , ForceMode2D.Impulse);
+                rb.AddForce(Vector2.up * (jumpForce * sprint), ForceMode2D.Impulse);
             else
             {
                 rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             }
-            
+
         }
     }
     void Attack()
