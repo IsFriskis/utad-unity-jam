@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     private Animator animator;
     private bool canSprint; //Habilita la posibilidad de correr
     bool isOnGround;   //Habilita la opcion de salto
-    public LayerMask groundLayer; //Define la capa que se utilizara para saber si esta o no en el suelo
+    public LayerMask solidLayer; //Define la capa que se utilizara para saber si esta tocando un objeto solido y puede saltar
     private bool isAlive;
   
 
@@ -76,7 +76,7 @@ public class Player : MonoBehaviour
             }
 
             //Lanzamos un RayCast para detectar si el Player esta tocando el suelo
-            if (Physics2D.Raycast(this.transform.position, Vector2.down, rayDistance, groundLayer))
+            if (Physics2D.Raycast(this.transform.position, Vector2.down, rayDistance, solidLayer))
             {
                 isOnGround = true;
 
