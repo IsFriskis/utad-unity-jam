@@ -28,6 +28,7 @@ public class Spirit: MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        rb.gravityScale = 0.5f;
         isAlive = true;
      
 
@@ -49,6 +50,8 @@ public class Spirit: MonoBehaviour
             Vector3 movimiento = Vector3.zero;
             if (Input.GetKey(KeyCode.LeftArrow))
             {
+                //Cambiar esto al fixedUpdate para que se mueva por fisica.
+                //GetComponent<Rigidbody2D>().MovePosition(Vector2.right * initialSpeed * Time.fixedDeltaTime);
                 movimiento -= transform.right;
                 animator.SetBool("Is_Moving", true);
             }

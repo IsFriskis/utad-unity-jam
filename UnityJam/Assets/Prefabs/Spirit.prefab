@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2987667444692284110}
   - component: {fileID: 2987667444692284097}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Sword_Collider
   m_TagString: Weapon
   m_Icon: {fileID: 0}
@@ -62,7 +62,7 @@ GameObject:
   - component: {fileID: 2987667446086879611}
   - component: {fileID: 2987667446086879613}
   - component: {fileID: 1244321758}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Spirit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -210,7 +210,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   life: 0
   mana: 10
-  sprint: 2
+  sprint: 1.6
   jumpForce: 5
   rayDistance: 0.2
   initialSpeed: 3
@@ -226,7 +226,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4745308663903764531}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Rope_Anchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}

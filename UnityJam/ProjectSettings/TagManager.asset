@@ -15,8 +15,8 @@ TagManager:
   - PlayerSpirit
   - Enemy
   - Solid
-  - 
-  - 
+  - RollLayer
+  - SpiritBlock
   - 
   - 
   - 

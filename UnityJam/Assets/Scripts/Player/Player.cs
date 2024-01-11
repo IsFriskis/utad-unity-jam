@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.Serialization;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -16,10 +18,13 @@ public class Player : MonoBehaviour
     [SerializeField] float rayDistance = 0.2f; //Distancia máxima del suelo que habilita poder saltar
     [SerializeField] float initialSpeed = 3.0f; //Velocidad base del personaje
     private Rigidbody2D rb;
+    private bool dir;
     private Animator animator;
     private bool isSprinting; //Esta corriendo
     bool isOnGround;   //Habilita la opcion de salto
     public LayerMask solidLayer; //Define la capa que se utilizara para saber si esta tocando un objeto solido y puede saltar
+    public LayerMask rollLayer;
+    public LayerMask playerLayer;
     private bool isAlive;
   
 
@@ -50,11 +55,15 @@ public class Player : MonoBehaviour
             if (Input.GetKey(KeyCode.A))
             {
                 movimiento -= transform.right;
+
+
                 animator.SetBool("Is_Moving", true);
             }
             if (Input.GetKey(KeyCode.D))
             {
                 movimiento += transform.right;
+ 
+
                 animator.SetBool("Is_Moving", true);
             }
             //Normallizamos el vector movimiento para mantener la misma velocidad en todas direcciones
@@ -107,6 +116,8 @@ public class Player : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.S))
                 {
                     animator.SetTrigger("Is_Rolling");
+                    gameObject.layer = 9;
+                    //Cambiar el layer del player a rodando
                     
                 }
             }
@@ -142,6 +153,11 @@ public class Player : MonoBehaviour
     void Death()
     {
         animator.SetTrigger("Is_Death");
+    }
+
+    void EndRoll()
+    {
+        gameObject.layer = 3;
     }
 
 }
