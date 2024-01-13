@@ -1,13 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.Serialization;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class Spirit: MonoBehaviour
+public class Spirit : MonoBehaviour
 {
-    
+
 
     [SerializeField] float life;
     [SerializeField] float mana;
@@ -21,7 +23,9 @@ public class Spirit: MonoBehaviour
     bool isOnGround;   //Habilita la opcion de salto
     public LayerMask solidLayer; //Define la capa que se utilizara para saber si esta tocando un objeto solido y puede saltar
     private bool isAlive;
-  
+    public bool leftLimit = false;
+    public bool rightLimit = false;
+
 
 
     private void Awake()
@@ -30,17 +34,18 @@ public class Spirit: MonoBehaviour
         animator = GetComponent<Animator>();
         rb.gravityScale = 0.5f;
         isAlive = true;
-     
+
 
     }
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
+
     {
         //Detectamos si el Player esta vivo
         if (isAlive)
@@ -48,18 +53,30 @@ public class Spirit: MonoBehaviour
             isOnGround = true;
             isSprinting = false;
             Vector3 movimiento = Vector3.zero;
+
+
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                //Cambiar esto al fixedUpdate para que se mueva por fisica.
-                //GetComponent<Rigidbody2D>().MovePosition(Vector2.right * initialSpeed * Time.fixedDeltaTime);
-                movimiento -= transform.right;
-                animator.SetBool("Is_Moving", true);
+                if (!leftLimit)
+                {
+                    movimiento -= transform.right;
+                    animator.SetBool("Is_Moving", true);
+                    RotateSpirit(false);
+                }
+
+
             }
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                movimiento += transform.right;
-                animator.SetBool("Is_Moving", true);
+                if (!rightLimit)
+                {
+                    movimiento += transform.right;
+                    animator.SetBool("Is_Moving", true);
+                    RotateSpirit(true);
+                }
+
             }
+
             //Normalizamos el vector movimiento para mantener la misma velocidad en todas direcciones
             if (movimiento.magnitude > 1.0f)
             { movimiento.Normalize(); }
@@ -109,7 +126,7 @@ public class Spirit: MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.DownArrow))
                 {
                     animator.SetTrigger("Is_Rolling");
-                    
+
                 }
             }
             //Detectamos si la vida del personaje es 0 y llamamos a la función de muerte
@@ -117,11 +134,11 @@ public class Spirit: MonoBehaviour
             {
                 Death();
                 isAlive = false;
-                
+
             }
         }
     }
- 
+
     void Jump()
     {
 
@@ -146,4 +163,69 @@ public class Spirit: MonoBehaviour
         animator.SetTrigger("Is_Death");
     }
 
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Verificar si estamos colisionando con un objeto que tiene el tag especificado
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Collider2D colisionado = collision.collider;
+            if (colisionado.CompareTag("rightLimit"))
+            {
+                // Establecer la bandera de colisión en true
+                rightLimit = true;
+
+            }
+        }
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Collider2D colisionado = collision.collider;
+            if (colisionado.CompareTag("leftLimit"))
+            {
+                // Establecer la bandera de colisión en true
+                leftLimit = true;
+
+
+            }
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        // Verificar si estamos colisionando con un objeto que tiene el tag especificado
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Collider2D colisionado = collision.collider;
+            if (colisionado.CompareTag("rightLimit"))
+            {
+                // Establecer la bandera de colisión en true
+                rightLimit = false;
+
+            }
+        }
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Collider2D colisionado = collision.collider;
+            if (colisionado.CompareTag("leftLimit"))
+            {
+                // Establecer la bandera de colisión en true
+                leftLimit = false;
+
+            }
+        }
+    }
+
+    public void RotateSpirit(bool dir)
+    {
+        if (dir)
+        {
+            gameObject.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+
+        }
+        else
+        {
+            gameObject.transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+        }
+    }
 }
+
+

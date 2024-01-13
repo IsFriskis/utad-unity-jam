@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     [SerializeField] float jumpForce = 5f; //Fuerza del salto
     [SerializeField] float rayDistance = 0.2f; //Distancia máxima del suelo que habilita poder saltar
     [SerializeField] float initialSpeed = 3.0f; //Velocidad base del personaje
+    [SerializeField] private GameObject Spirit;
     private Rigidbody2D rb;
     private bool dir;
     private Animator animator;
@@ -26,6 +27,7 @@ public class Player : MonoBehaviour
     public LayerMask rollLayer;
     public LayerMask playerLayer;
     private bool isAlive;
+
   
 
 
@@ -54,17 +56,21 @@ public class Player : MonoBehaviour
             Vector3 movimiento = Vector3.zero;
             if (Input.GetKey(KeyCode.A))
             {
-                movimiento -= transform.right;
-
-
-                animator.SetBool("Is_Moving", true);
+                if (!Spirit.GetComponent<Spirit>().rightLimit)
+                {
+                    movimiento -= transform.right;
+                    animator.SetBool("Is_Moving", true);
+                    RotatePlayer(false);
+                }
             }
             if (Input.GetKey(KeyCode.D))
             {
-                movimiento += transform.right;
- 
-
-                animator.SetBool("Is_Moving", true);
+                if (!Spirit.GetComponent<Spirit>().leftLimit)
+                {
+                    movimiento += transform.right;
+                    animator.SetBool("Is_Moving", true);
+                    RotatePlayer(true);
+                }
             }
             //Normallizamos el vector movimiento para mantener la misma velocidad en todas direcciones
             if (movimiento.magnitude > 1.0f)
@@ -131,7 +137,7 @@ public class Player : MonoBehaviour
         }
     }
  
-    void Jump()
+    public void Jump()
     {
        
         if (isOnGround)
@@ -145,19 +151,33 @@ public class Player : MonoBehaviour
             
         }
     }
-    void Attack()
+    public void Attack()
     {
         animator.SetTrigger("Is_OnAttack");
     }
 
-    void Death()
+    public void Death()
     {
         animator.SetTrigger("Is_Death");
     }
 
-    void EndRoll()
+    public void EndRoll()
     {
         gameObject.layer = 3;
+    }
+
+    public void RotatePlayer(bool dir)
+    {
+        if (dir)        {
+            gameObject.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            gameObject.transform.Find("Main Camera").transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+
+        }
+        else 
+        {
+            gameObject.transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+            gameObject.transform.Find("Main Camera").transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+        }
     }
 
 }
