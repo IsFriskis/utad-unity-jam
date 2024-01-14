@@ -9,15 +9,13 @@ namespace Assets.Scripts.Enemies
         [SerializeField]
         protected BasicPhantomEnemyScript partner;
 
-        [SerializeField]
-        protected GameObject[] waypoints;
-
         protected override void Die()
         {
             if(partner.currentHealth <= 0 && currentHealth <= 0)
             {
                 //Logica de morir // Destroy
             }
+
         }
     }
 }

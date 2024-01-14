@@ -31,6 +31,12 @@ public abstract class BasicEnemyScript : MonoBehaviour
     [SerializeField]
     public GameObject playableCharacter;
 
+    //Waypoint logic for patrolling
+    [SerializeField]
+    protected GameObject[] waypoints;
+
+    protected int currentWaypoint = 0;
+
     protected Animator anim;
     protected CapsuleCollider2D capCol2D;
     protected SpriteRenderer spriteRenderer;
@@ -67,6 +73,8 @@ public abstract class BasicEnemyScript : MonoBehaviour
         //Comprobar si ambas formas estan stunneadas y entran dentro del deathTimer para poder morir
         //Pondremos la animacion de morir de cada uno de los NP
 
+
+    public abstract void IALogic();
     //Se ajusta la posicion del enemigo para que siga la direccion del jugador cuando entre dentro de su rango
     protected void FollowViewPlayer()
     {
