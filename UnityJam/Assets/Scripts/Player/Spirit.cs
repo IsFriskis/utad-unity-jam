@@ -21,8 +21,12 @@ public class Spirit: MonoBehaviour
     bool isOnGround;   //Habilita la opcion de salto
     public LayerMask solidLayer; //Define la capa que se utilizara para saber si esta tocando un objeto solido y puede saltar
     private bool isAlive;
-  
 
+
+    public int attackDamage;
+    public Transform attackPoint;
+    public float attackRange = 0.35f;
+    public LayerMask enemyLayer;
 
     private void Awake()
     {
@@ -35,7 +39,7 @@ public class Spirit: MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        attackDamage = 20;
     }
 
     // Update is called once per frame
@@ -136,6 +140,12 @@ public class Spirit: MonoBehaviour
     void Attack()
     {
         animator.SetTrigger("Is_OnAttack");
+        Collider2D[] hitEnemy = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
+        foreach (Collider2D enemy in hitEnemy)
+        {
+            enemy.GetComponent<BasicEnemyScript>().TakeDamage(attackDamage);
+            Debug.Log("Ha golpeado");
+        }
     }
 
     void Death()

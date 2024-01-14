@@ -18,7 +18,7 @@ public class NecromancerScript : BasicEnemyScript
 
     void FixedUpdate()
     {
-        FollowViewPlayer();
+       
         //Introduciremos aqui la lógica de spawn del necromancer porque este enemigo consiste en que cuando detecte al jugador cree una entidad de enemigo aleatorio
         //Que perseguira de forma indefinida al jugador. Si el jugador se acerca mucho a la posicion del necromancer este atacara a melee, mientras tanto realizara
         //Ataques con proyectiles. (Discutir con el grupo)

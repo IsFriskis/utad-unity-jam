@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Weapon
+  - Physical
+  - Ghost
+  - GhostPlayer
   layers:
   - Default
   - TransparentFX
@@ -13,9 +16,9 @@ TagManager:
   - Water
   - UI
   - PlayerSpirit
-  - Enemy
+  - PhysicalEnemy
   - Solid
-  - 
+  - GhostEnemy
   - 
   - 
   - 

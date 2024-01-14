@@ -12,7 +12,7 @@ public class BanditScript : BasicEnemyScript
 
     void FixedUpdate()
     {
-        FollowViewPlayer();
+        
         //Aqui introduciremos el comportamiento que va a tener el Bandido básico. Podría funcionar de forma en que si el jugador entra en su rango le persiga y cuando alcanze
         //al jugador ataque sin parar.
     }

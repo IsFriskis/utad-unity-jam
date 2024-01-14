@@ -1,23 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class BasicEnemyScript : MonoBehaviour
 {
     [SerializeField]
-    public int maxHealth;
+    protected int maxHealth;
     //La mecanica de la armadura podriamos hacer que el espiritu pueda quitar la armadura y asi quita la reduccion de daño. Pudiendo ahorrar asi ciertos enemigos
     //La creacion de espiritus.
-    [SerializeField] 
-    public int armorPoints;
     [SerializeField]
-    public int dmgDealt;
+    protected int attackDamage;
     [SerializeField]
-    public float deathTimer;
+    protected float velocity;
+    [SerializeField]
+    protected float detectionRange;
+    [SerializeField]
+    protected float deathTimer;
     //Si la vida de algun enemigo es igual a 0 quedara stunned y tendra un deathTimer, si ambas formas estan stunned dentro del periodo del deathTimer el enemigo morira
-    public bool isStunned;
+    protected bool isStunned;
+    public int currentHealth;
 
-    protected int currentHealth;
 
     protected Animator anim;
     protected CapsuleCollider2D capCol2D;
@@ -33,42 +37,62 @@ public class BasicEnemyScript : MonoBehaviour
     }
     void Start()
     {
-        currentHealth = maxHealth;
+        
     }
 
     void FixedUpdate()
     {
         
     }
+ 
 
-    public virtual void MeleeAttack()
+    public virtual void TakeDamage(int damage)
     {
-        //Reproducir animaciones y establecer los colliders correspondientes para que encuentre el TAG "PLAYER" y le cause daño
-    }
-    public virtual void RangedAttack()
-    {
-        //Reproducir animaciones y establecer los colliders correspondientes para que encuentre el TAG "PLAYER" y le cause daño.
-        //Ademas de tener que crear e instaciar los proyectiles propios de cada clase.
-    }
-
-    public void TakeDamage(int damage)
-    {
-        //Introducir la lógica de que el collider de cuando el TAG "Player" entre en colision con el del TAG "Enemy" se reste la vida
-        //Causada por el daño establecido por el jugador
+        currentHealth -= damage;
         if(currentHealth <= 0)
         {
             Die();
         }
     }
-
-    protected void Die()
+    protected void GetStunned()
     {
-        //Comprobar si ambas formas estan stunneadas y entran dentro del deathTimer para poder morir
-        //Pondremos la animacion de morir de cada uno de los NPC
-        Destroy(gameObject);
+        isStunned = true;
+
+        if (anim != null)
+        {
+            anim.SetBool("IsStunned", true);
+        }
+
+        StartCoroutine(StunTimer());
+    }
+
+    private IEnumerator StunTimer()
+    {
+        yield return new WaitForSeconds(deathTimer);
+
+        isStunned = false;
+
+        if (anim != null)
+        {
+            anim.SetBool("IsStunned", false);
+        }
+        else
+        {
+            RegenerateHealth();
+        }
+    }
+    protected virtual void RegenerateHealth()
+    {
+        currentHealth = maxHealth / 2;
+    }
+    public virtual void Die()
+    {
+        anim.SetTrigger("isDead");
+        
     }
 
     //Se ajusta la posicion del enemigo para que siga la direccion del jugador cuando entre dentro de su rango
+    /*
     protected void FollowViewPlayer()
     {
         Vector2 npcPosition = transform.position;
@@ -85,4 +109,7 @@ public class BasicEnemyScript : MonoBehaviour
             transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
     }
+    */
+    
+
 }
