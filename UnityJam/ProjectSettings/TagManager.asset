@@ -7,6 +7,7 @@ TagManager:
   - Weapon
   - rightLimit
   - leftLimit
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX

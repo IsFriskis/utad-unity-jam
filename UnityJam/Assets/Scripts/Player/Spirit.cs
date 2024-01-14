@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.Serialization;
+using Unity.IO.LowLevel.Unsafe;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -25,6 +26,11 @@ public class Spirit : MonoBehaviour
     private bool isAlive;
     public bool leftLimit = false;
     public bool rightLimit = false;
+    public Transform spawnPoint;
+    public GameObject bullet;
+    private GameObject fireBullet;
+    [SerializeField]private int bulletSpeed;
+
 
 
 
@@ -118,7 +124,7 @@ public class Spirit : MonoBehaviour
             //Llamamos a la función de ataque
             if (Input.GetKeyDown(KeyCode.RightControl))
             {
-                Attack();
+                Fire();
 
             }
             if (movimiento.x > 0)
@@ -135,6 +141,11 @@ public class Spirit : MonoBehaviour
                 Death();
                 isAlive = false;
 
+            }
+
+            if(Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                Fire();
             }
         }
     }
@@ -153,10 +164,10 @@ public class Spirit : MonoBehaviour
 
         }
     }
-    void Attack()
-    {
-        animator.SetTrigger("Is_OnAttack");
-    }
+    //void Attack()
+    //{
+    //    animator.SetTrigger("Is_OnAttack");
+    //}
 
     void Death()
     {
@@ -226,6 +237,23 @@ public class Spirit : MonoBehaviour
             gameObject.transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
         }
     }
+
+    public void Fire()
+    {
+        GameObject fireBullet = Instantiate(bullet, spawnPoint.position, spawnPoint.rotation);
+
+        if (transform.localScale.x == 1)
+        {
+            fireBullet.GetComponent<Rigidbody2D>().AddForce(Vector2.right * bulletSpeed, ForceMode2D.Impulse);
+        }
+
+        else
+        {
+            fireBullet.GetComponent<Rigidbody2D>().AddForce(Vector2.left * bulletSpeed, ForceMode2D.Impulse);
+        }
+    
+    }
+
 }
 
 
