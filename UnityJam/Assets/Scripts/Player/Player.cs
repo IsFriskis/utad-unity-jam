@@ -8,7 +8,6 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     
-
     [SerializeField] float life;
     [SerializeField] float mana;
     [SerializeField] float sprint = 1f; //Multiplicador de la velocidad base cuando corre
@@ -21,7 +20,11 @@ public class Player : MonoBehaviour
     bool isOnGround;   //Habilita la opcion de salto
     public LayerMask solidLayer; //Define la capa que se utilizara para saber si esta tocando un objeto solido y puede saltar
     private bool isAlive;
-  
+
+    public int attackDamage;
+    public Transform attackPoint;
+    public float attackRange =0.35f;
+    public LayerMask enemyLayer;
 
 
     private void Awake()
@@ -35,7 +38,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        attackDamage = 20;
     }
 
     // Update is called once per frame
@@ -47,6 +50,7 @@ public class Player : MonoBehaviour
             isOnGround = true;
             isSprinting = false;
             Vector3 movimiento = Vector3.zero;
+            
             if (Input.GetKey(KeyCode.A))
             {
                 movimiento -= transform.right;
@@ -137,6 +141,12 @@ public class Player : MonoBehaviour
     void Attack()
     {
         animator.SetTrigger("Is_OnAttack");
+        Collider2D[] hitEnemy=Physics2D.OverlapCircleAll(attackPoint.position,attackRange,enemyLayer);
+        foreach (Collider2D enemy in hitEnemy)
+        {
+            enemy.GetComponent<BasicEnemyScript>().TakeDamage(attackDamage);
+            Debug.Log("Ha golpeado");
+        }
     }
 
     void Death()

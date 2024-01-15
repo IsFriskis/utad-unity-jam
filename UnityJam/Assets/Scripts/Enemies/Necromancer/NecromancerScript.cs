@@ -41,7 +41,6 @@ public class NecromancerScript : BasicEnemyScript
         if (isAttacking)
         {
             attackTimer += Time.deltaTime;
-            Debug.Log(attackTimer);
             if (attackTimer >= attackDelay)
             {
                 attackTimer = 0f;
