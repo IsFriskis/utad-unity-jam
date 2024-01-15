@@ -36,7 +36,6 @@ namespace Assets.Scripts.Enemies.Bandit
         public override void Attack()
         {
             anim.SetBool("Attack", true);
-            Debug.Log("Attack");
         }
 
         public override void TakeDamage(int damage)
@@ -48,7 +47,7 @@ namespace Assets.Scripts.Enemies.Bandit
         {
             Vector3 movimiento = Vector3.zero;
             float distanceToPlayer = Vector3.Distance(playableCharacter.transform.position, transform.position);
-            Debug.Log("Distancia al player:" + distanceToPlayer);
+
             //Si el jugador esta en rango de deteccion
             if (distanceToPlayer <= detectionRange)
             {
@@ -56,7 +55,7 @@ namespace Assets.Scripts.Enemies.Bandit
                 //Si el jugador esta en rango de ataque
                 if (distanceToPlayer <= attackRange)
                 {
-                    Debug.Log("Entro");
+
                     Attack();
                 }
                 //Si el jugador esta en rango de deteccion pero no de ataque
