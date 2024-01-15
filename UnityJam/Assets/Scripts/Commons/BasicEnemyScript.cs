@@ -19,7 +19,6 @@ public class BasicEnemyScript : MonoBehaviour
     [SerializeField]
     public GameObject enemyPartner;
     public bool isStunned;
-    bool isPartnerStunned;
     public int currentHealth;
     private bool isInvulnerable = false;
 
@@ -48,20 +47,12 @@ public class BasicEnemyScript : MonoBehaviour
     {
         if (!isInvulnerable)
         {
-            isPartnerStunned = enemyPartner.GetComponent<BasicEnemyScript>().isStunned;
             currentHealth -= damage;
             anim.SetTrigger("isHurt");
 
             if (currentHealth <= 0)
             {
-                if (isStunned && isPartnerStunned)
-                {
-                    Die();
-                }
-                else
-                {
-                    GetStunned();
-                }
+               GetStunned();
             }
         }
     }
@@ -69,21 +60,31 @@ public class BasicEnemyScript : MonoBehaviour
     protected void GetStunned()
     {
         isStunned = true;
-        
+
         if (anim != null)
         {
             anim.SetBool("isStunned", true);
             capCol2D.offset = new Vector2(0, 0.06f);
         }
         
+        if (isStunned && enemyPartner.GetComponent<BasicEnemyScript>().isStunned)
+        {
+            enemyPartner.GetComponent<BasicEnemyScript>().Die();
+            Die();
+            Debug.Log("Se murieron");
+        }
+
         StartCoroutine(StunTimer());
+        
+
     }
 
     private IEnumerator StunTimer()
     {
         isInvulnerable = true;
+        Debug.Log("Estuneado");
         yield return new WaitForSeconds(deathTimer);
-
+        Debug.Log("Normal");
         isStunned = false;
         isInvulnerable = false;
 
@@ -101,6 +102,7 @@ public class BasicEnemyScript : MonoBehaviour
     public virtual void Die()
     {
         anim.SetBool("isDead",true);
+        Destroy(gameObject, 10f);
     }
 
     protected void FollowViewPlayer()

@@ -29,7 +29,7 @@ public class ArcherScript : BasicEnemyScript
     }
 
     public override void TakeDamage(int damage)
-    {
+    {   
         base.TakeDamage(damage);
     }
 
@@ -68,7 +68,6 @@ public class ArcherScript : BasicEnemyScript
     public override void Die()
     {
         capCol2D.offset = new Vector2(0, 0.07f);
-        Destroy(gameObject, 5f);
         base.Die();
     }
 }
