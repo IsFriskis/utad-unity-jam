@@ -242,7 +242,7 @@ public class Spirit : MonoBehaviour
     {
         GameObject fireBullet = Instantiate(bullet, spawnPoint.position, spawnPoint.rotation);
 
-        if (transform.localScale.x == 1)
+        if (transform.localScale.x == 1.5)
         {
             fireBullet.GetComponent<Rigidbody2D>().AddForce(Vector2.right * bulletSpeed, ForceMode2D.Impulse);
         }
