@@ -8,8 +8,6 @@ public class BasicEnemyScript : MonoBehaviour
 {
     [SerializeField]
     protected int maxHealth;
-    //La mecanica de la armadura podriamos hacer que el espiritu pueda quitar la armadura y asi quita la reduccion de daño. Pudiendo ahorrar asi ciertos enemigos
-    //La creacion de espiritus.
     [SerializeField]
     protected int attackDamage;
     [SerializeField]
@@ -18,10 +16,12 @@ public class BasicEnemyScript : MonoBehaviour
     protected float detectionRange;
     [SerializeField]
     protected float deathTimer;
-    //Si la vida de algun enemigo es igual a 0 quedara stunned y tendra un deathTimer, si ambas formas estan stunned dentro del periodo del deathTimer el enemigo morira
-    protected bool isStunned;
+    [SerializeField]
+    public GameObject enemyPartner;
+    public bool isStunned;
+    bool isPartnerStunned;
     public int currentHealth;
-
+    private bool isInvulnerable = false;
 
     protected Animator anim;
     protected CapsuleCollider2D capCol2D;
@@ -37,47 +37,60 @@ public class BasicEnemyScript : MonoBehaviour
     }
     void Start()
     {
-        
+       
     }
-
-    void FixedUpdate()
+    void Update()
     {
         
     }
- 
-
+    
     public virtual void TakeDamage(int damage)
     {
-        currentHealth -= damage;
-        if(currentHealth <= 0)
+        if (!isInvulnerable)
         {
-            Die();
+            isPartnerStunned = enemyPartner.GetComponent<BasicEnemyScript>().isStunned;
+            currentHealth -= damage;
+            anim.SetTrigger("isHurt");
+
+            if (currentHealth <= 0)
+            {
+                if (isStunned && isPartnerStunned)
+                {
+                    Die();
+                }
+                else
+                {
+                    GetStunned();
+                }
+            }
         }
     }
+
     protected void GetStunned()
     {
         isStunned = true;
-
+        
         if (anim != null)
         {
-            anim.SetBool("IsStunned", true);
+            anim.SetBool("isStunned", true);
+            capCol2D.offset = new Vector2(0, 0.06f);
         }
-
+        
         StartCoroutine(StunTimer());
     }
 
     private IEnumerator StunTimer()
     {
+        isInvulnerable = true;
         yield return new WaitForSeconds(deathTimer);
 
         isStunned = false;
+        isInvulnerable = false;
 
         if (anim != null)
         {
-            anim.SetBool("IsStunned", false);
-        }
-        else
-        {
+            anim.SetBool("isStunned", false);
+            capCol2D.offset = new Vector2(0, 0);
             RegenerateHealth();
         }
     }
@@ -87,29 +100,47 @@ public class BasicEnemyScript : MonoBehaviour
     }
     public virtual void Die()
     {
-        anim.SetTrigger("isDead");
-        
+        anim.SetBool("isDead",true);
     }
 
-    //Se ajusta la posicion del enemigo para que siga la direccion del jugador cuando entre dentro de su rango
-    /*
     protected void FollowViewPlayer()
     {
         Vector2 npcPosition = transform.position;
         Vector2 playerPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
+        Vector2 playerGhostPosition = GameObject.FindGameObjectWithTag("GhostPlayer").transform.position;
 
-        bool knightIsToTheRight = (playerPosition.x > npcPosition.x);
+        float distance = Vector2.Distance(npcPosition,playerPosition);
+        float distanceGhost = Vector2.Distance(npcPosition, playerGhostPosition);
 
-        if (knightIsToTheRight)
+        if(distance <= detectionRange) 
         {
-            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            bool knightIsToTheRight = (playerPosition.x > npcPosition.x);
+
+            if (knightIsToTheRight)
+            {
+                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            }
+            else
+            {
+                transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            }
         }
-        else
+        if(distanceGhost <= detectionRange)
         {
-            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+
+            bool knightIsToTheRight = (playerGhostPosition.x > npcPosition.x);
+
+            if (knightIsToTheRight)
+            {
+                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            }
+            else
+            {
+                transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            }
         }
     }
-    */
+   
     
 
 }

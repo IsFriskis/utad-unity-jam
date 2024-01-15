@@ -5,29 +5,27 @@ using UnityEngine;
 
 public class ArcherScript : BasicEnemyScript
 {
-    //[SerializeField]
-    //public GameObject partner;
     //Almacenamos la posicion del npc y la del jugador
     private Vector2 myPosition;
     private Vector2 playerPosition;
 
-
     //Hay que instanciar un gameobject arrow para que el proyectil pueda impactar al jugador
-    //public GameObject arrow;
-    //Hay que comprobar el collider del arrow para realizar daño si impacta con el rigidbody del player
-    //public GameObject arrowPosition;
+    public GameObject arrow;
+    //Hay que comprobar el collider del arrow para realizar daño si impacta con el transform del player
 
     void Start()
     {
         maxHealth = 100;
         currentHealth = maxHealth;
         attackDamage = 15;
-        deathTimer = 20f;
+        deathTimer = 15f;
+        detectionRange = 10;
     }
 
     void FixedUpdate()
     {
-        
+        FollowViewPlayer();
+        ArcherAttack();
     }
 
     public override void TakeDamage(int damage)
@@ -37,11 +35,40 @@ public class ArcherScript : BasicEnemyScript
 
     private void ArcherAttack()
     {
+        myPosition = transform.position;
+        float distanceToPlayer = Vector2.Distance(myPosition, GameObject.FindGameObjectWithTag("Player").transform.position);
+        float distanceToGhostPlayer = Vector2.Distance(myPosition, GameObject.FindGameObjectWithTag("GhostPlayer").transform.position);
 
+        if (distanceToPlayer <= detectionRange)
+        {
+            anim.SetBool("isAttacking", true);
+            AttackPlayer();
+        }
+
+        else if (distanceToGhostPlayer <= detectionRange)
+        {
+            anim.SetBool("isAttacking", true);
+            AttackGhostPlayer();
+        }
+        else
+        {
+            anim.SetBool("isAttacking", false);
+        }
+    }
+
+    private void AttackPlayer()
+    {
+        
+    }
+
+    private void AttackGhostPlayer()
+    {
+            
     }
     public override void Die()
     {
         capCol2D.offset = new Vector2(0, 0.07f);
+        Destroy(gameObject, 5f);
         base.Die();
     }
 }
