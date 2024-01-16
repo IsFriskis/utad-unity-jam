@@ -80,7 +80,7 @@ public class NecromancerScript : BasicEnemyScript
         throw new System.NotImplementedException();
     }
 
-    protected override void Die()
+    public override void Die()
     {
         throw new System.NotImplementedException();
     }

@@ -8,7 +8,7 @@ namespace Assets.Scripts.Enemies
         [SerializeField]
         protected BasicPhysicalEnemyScript partner;
 
-        protected override void Die()
+        public override void Die()
         {
             throw new System.NotImplementedException();
         }

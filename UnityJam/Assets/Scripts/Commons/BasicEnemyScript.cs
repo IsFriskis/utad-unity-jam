@@ -30,9 +30,6 @@ public abstract class BasicEnemyScript : MonoBehaviour
     protected bool lookingLeft;
 
     [SerializeField]
-    public float detectionRange;
-
-    [SerializeField]
     public float speed;
 
     [SerializeField]
@@ -78,13 +75,6 @@ public abstract class BasicEnemyScript : MonoBehaviour
 
     public abstract void Attack();
 
-    public abstract void TakeDamage(int damage);
-
-    protected abstract void Die();
-        //Comprobar si ambas formas estan stunneadas y entran dentro del deathTimer para poder morir
-        //Pondremos la animacion de morir de cada uno de los NP
-
-
     public abstract void IALogic();
     //Se ajusta la posicion del enemigo para que siga la direccion del jugador cuando entre dentro de su rang
     
@@ -109,7 +99,6 @@ public abstract class BasicEnemyScript : MonoBehaviour
         if (anim != null)
         {
             anim.SetBool("isStunned", true);
-            capCol2D.offset = new Vector2(0, 0.06f);
         }
         
         if (isStunned && enemyPartner.GetComponent<BasicEnemyScript>().isStunned)
@@ -136,7 +125,6 @@ public abstract class BasicEnemyScript : MonoBehaviour
         if (anim != null)
         {
             anim.SetBool("isStunned", false);
-            capCol2D.offset = new Vector2(0, 0);
             RegenerateHealth();
         }
     }
@@ -152,38 +140,39 @@ public abstract class BasicEnemyScript : MonoBehaviour
 
     protected void FollowViewPlayer()
     {
-    Vector2 npcPosition = transform.position;
-    Vector2 playerPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
-    Vector2 playerGhostPosition = GameObject.FindGameObjectWithTag("GhostPlayer").transform.position;
+        Vector2 npcPosition = transform.position;
+        Vector2 playerPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
+        Vector2 playerGhostPosition = GameObject.FindGameObjectWithTag("GhostPlayer").transform.position;
  
-    float distance = Vector2.Distance(npcPosition,playerPosition);
-    float distanceGhost = Vector2.Distance(npcPosition, playerGhostPosition);
+        float distance = Vector2.Distance(npcPosition,playerPosition);
+        float distanceGhost = Vector2.Distance(npcPosition, playerGhostPosition);
  
-    if(distance <= detectionRange) 
-    {
-        bool knightIsToTheRight = (playerPosition.x > npcPosition.x);
- 
-        if (knightIsToTheRight)
+        if(distance <= detectionRange) 
         {
-            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            bool knightIsToTheRight = (playerPosition.x > npcPosition.x);
+ 
+            if (knightIsToTheRight)
+            {
+                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            }
+            else
+            {
+                transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            }
         }
-        else
+        if(distanceGhost <= detectionRange)
         {
-            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+ 
+            bool knightIsToTheRight = (playerGhostPosition.x > npcPosition.x);
+ 
+            if (knightIsToTheRight)
+            {
+                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            }
+            else
+            {
+                transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            }
         }
     }
-    if(distanceGhost <= detectionRange)
-    {
- 
-        bool knightIsToTheRight = (playerGhostPosition.x > npcPosition.x);
- 
-        if (knightIsToTheRight)
-        {
-            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-        }
-        else
-        {
-            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-        }
-    }
-}}
+}

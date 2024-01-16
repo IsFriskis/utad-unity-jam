@@ -7,11 +7,6 @@ public class ArcherScript : BasicEnemyScript
 {
     //Almacenamos la posicion del npc y la del jugador
     private Vector2 myPosition;
-    private Vector2 playerPosition;
-
-    //Hay que instanciar un gameobject arrow para que el proyectil pueda impactar al jugador
-    public GameObject arrow;
-    //Hay que comprobar el collider del arrow para realizar daño si impacta con el transform del player
 
     void Start()
     {
@@ -25,7 +20,7 @@ public class ArcherScript : BasicEnemyScript
     void FixedUpdate()
     {
         FollowViewPlayer();
-        ArcherAttack();
+        Attack();
     }
 
     public override void TakeDamage(int damage)
@@ -33,7 +28,12 @@ public class ArcherScript : BasicEnemyScript
         base.TakeDamage(damage);
     }
 
-    private void ArcherAttack()
+    public override void Die()
+    {
+        base.Die();
+    }
+
+    public override void Attack()
     {
         myPosition = transform.position;
         float distanceToPlayer = Vector2.Distance(myPosition, GameObject.FindGameObjectWithTag("Player").transform.position);
@@ -42,13 +42,12 @@ public class ArcherScript : BasicEnemyScript
         if (distanceToPlayer <= detectionRange)
         {
             anim.SetBool("isAttacking", true);
-            AttackPlayer();
         }
 
         else if (distanceToGhostPlayer <= detectionRange)
         {
             anim.SetBool("isAttacking", true);
-            AttackGhostPlayer();
+
         }
         else
         {
@@ -56,19 +55,9 @@ public class ArcherScript : BasicEnemyScript
         }
     }
 
-    private void AttackPlayer()
+    public override void IALogic()
     {
-        
-    }
-
-    private void AttackGhostPlayer()
-    {
-            
-    }
-    public override void Die()
-    {
-        capCol2D.offset = new Vector2(0, 0.07f);
-        base.Die();
+        throw new System.NotImplementedException();
     }
 }
 

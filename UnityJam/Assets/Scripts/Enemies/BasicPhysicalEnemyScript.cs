@@ -9,7 +9,7 @@ namespace Assets.Scripts.Enemies
         [SerializeField]
         protected BasicPhantomEnemyScript partner;
 
-        protected override void Die()
+        public override void Die()
         {
             if(partner.currentHealth <= 0 && currentHealth <= 0)
             {
