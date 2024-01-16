@@ -3,22 +3,20 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags:
-  - Weapon
-  - PlayerSpirit
+  tags: []
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Player
+  - 
   - Water
   - UI
-  - PlayerSpirit
-  - Enemy
-  - Solid
   - 
   - 
-  - SpiritPortal
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -42,13 +40,4 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
-    locked: 0
-  - name: FoggyTrees
-    uniqueID: 408882177
-    locked: 0
-  - name: FarTrees
-    uniqueID: 3912106207
-    locked: 0
-  - name: NearTrees
-    uniqueID: 1285747193
     locked: 0

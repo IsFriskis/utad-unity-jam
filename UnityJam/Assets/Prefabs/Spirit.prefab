@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &421271525
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 421271526}
+  m_Layer: 6
+  m_Name: FirePoint
+  m_TagString: SpawnPoint
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &421271526
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421271525}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.469, y: 0.771, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2987667446086879608}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2987667444692284111
 GameObject:
   m_ObjectHideFlags: 0
@@ -10,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2987667444692284110}
   - component: {fileID: 2987667444692284097}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Sword_Collider
   m_TagString: Weapon
   m_Icon: {fileID: 0}
@@ -62,7 +93,7 @@ GameObject:
   - component: {fileID: 2987667446086879611}
   - component: {fileID: 2987667446086879613}
   - component: {fileID: 1244321758}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Spirit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -78,11 +109,12 @@ Transform:
   m_GameObject: {fileID: 2987667446086879559}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -8.9, y: -3.931, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2987667444692284110}
   - {fileID: 4745308663903764531}
+  - {fileID: 421271526}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -210,13 +242,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   life: 0
   mana: 10
-  sprint: 2
+  sprint: 1.6
   jumpForce: 5
   rayDistance: 0.2
   initialSpeed: 3
   solidLayer:
     serializedVersion: 2
     m_Bits: 256
+  leftLimit: 0
+  rightLimit: 0
+  spawnPoint: {fileID: 421271526}
+  bullet: {fileID: 5310288821468838796, guid: af5a04a657370244aa991a85798dc379, type: 3}
+  bulletSpeed: 4
 --- !u!1 &5878009435694449004
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,7 +263,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4745308663903764531}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Rope_Anchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
