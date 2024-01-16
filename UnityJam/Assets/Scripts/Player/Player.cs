@@ -24,11 +24,12 @@ public class Player : MonoBehaviour
     private bool isSprinting; //Esta corriendo
     bool isOnGround;   //Habilita la opcion de salto
     public LayerMask solidLayer; //Define la capa que se utilizara para saber si esta tocando un objeto solido y puede saltar
-    public LayerMask rollLayer;
     public LayerMask playerLayer;
     private bool isAlive;
+    private bool reciveDamage = false;
 
-  
+
+
 
 
     private void Awake()
@@ -48,9 +49,12 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        print(reciveDamage);
+        animator.SetFloat("Speed_Y", rb.velocity.y);
         //Detectamos si el Player esta vivo
-        if (isAlive)
+        if (isAlive && !reciveDamage)
         {
+
             isOnGround = true;
             isSprinting = false;
             Vector3 movimiento = Vector3.zero;
@@ -81,12 +85,12 @@ public class Player : MonoBehaviour
             if (Physics2D.Raycast(this.transform.position, Vector2.down, rayDistance, solidLayer))
             {
                 isOnGround = true;
-
+                animator.SetBool("Is_Grounded", true);
             }
             else
             {
                 isOnGround = false;
-                animator.SetTrigger("Is_Jumping");
+                animator.SetBool("Is_Grounded",false);
             }
 
             //Desplazamos el personaje a una velocidad
@@ -122,7 +126,7 @@ public class Player : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.S))
                 {
                     animator.SetTrigger("Is_Rolling");
-                    gameObject.layer = 9;
+                    gameObject.layer = 12;
                     //Cambiar el layer del player a rodando
                     
                 }
@@ -139,14 +143,22 @@ public class Player : MonoBehaviour
  
     public void Jump()
     {
-       
+
         if (isOnGround)
         {
             if (isSprinting)
-            rb.AddForce(Vector2.up * (jumpForce * sprint)  , ForceMode2D.Impulse);
+            {
+                //rb.AddForce(Vector2.up * (jumpForce * sprint), ForceMode2D.Impulse);
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce * sprint);
+               // animator.SetFloat("Speed_Y", rb.velocity.y);
+                
+            }
             else
             {
-                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                //rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+                //animator.SetFloat("Speed_Y", rb.velocity.y);
+                
             }
             
         }
@@ -169,15 +181,28 @@ public class Player : MonoBehaviour
     public void RotatePlayer(bool dir)
     {
         if (dir)        {
-            gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-            gameObject.transform.Find("Main Camera").transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+            gameObject.transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
+            
 
         }
         else 
         {
-            gameObject.transform.localScale = new Vector3(-1.5f, 1.5f, 1.5f);
-            gameObject.transform.Find("Main Camera").transform.localScale = new Vector3(-1.5f, 1.5f, 1.5f);
+            gameObject.transform.localScale = new Vector3(-2.0f, 2.0f, 2.0f);
+            
         }
     }
-
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log(collision.collider.tag);
+        if (collision.collider.CompareTag ("Sword") ) 
+        {
+            animator.SetTrigger("Damage");
+            reciveDamage = true;
+        }
+    }
+    public void FinishHitAnimation()
+    {
+        reciveDamage = false;
+      
+    }
 }

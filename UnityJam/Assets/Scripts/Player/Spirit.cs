@@ -229,12 +229,12 @@ public class Spirit : MonoBehaviour
     {
         if (dir)
         {
-            gameObject.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+            gameObject.transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
 
         }
         else
         {
-            gameObject.transform.localScale = new Vector3(-1.5f, 1.5f, 1.5f);
+            gameObject.transform.localScale = new Vector3(-2.0f, 2.0f, 2.0f);
         }
     }
 

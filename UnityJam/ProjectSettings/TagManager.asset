@@ -3,21 +3,28 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - rightLimit
+  - leftLimit
+  - Weapon
+  - SpawnPoint
+  - PlayerSpirit
+  - Spirit
+  - Sword
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Solid
+  - Spirit
+  - Portal
+  - Projectile
+  - Enemy
+  - Phantom_Enemy
+  - RollLayer
   - 
   - 
   - 
