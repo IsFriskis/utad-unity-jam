@@ -239,8 +239,7 @@ public class Spirit : MonoBehaviour
     void OnCollisionExit2D(Collision2D collision)
     {
         // Verificar si estamos colisionando con un objeto que tiene el tag especificado
-        if (collision.gameObject.CompareTag("Player"))
-        {
+
             Collider2D colisionado = collision.collider;
             if (colisionado.CompareTag("rightLimit"))
             {
@@ -248,17 +247,17 @@ public class Spirit : MonoBehaviour
                 rightLimit = false;
 
             }
-        }
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            Collider2D colisionado = collision.collider;
+        
+
+            //Collider2D
+            colisionado = collision.collider;
             if (colisionado.CompareTag("leftLimit"))
             {
                 // Establecer la bandera de colisi�n en true
                 leftLimit = false;
 
+            
             }
-        }
     }
     public void TakeDamage(float damage, float positionEnemy){
         if(!receiveDamage){

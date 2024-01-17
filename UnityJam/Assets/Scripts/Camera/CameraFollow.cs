@@ -12,6 +12,8 @@ public class CameraFollow : MonoBehaviour
     public float rotationOffset;
     public bool canMove;
     private GameObject background;
+    [SerializeField] private GameObject cameraLimitRight;
+    [SerializeField] private GameObject cameraLimitLeft;
 
     void Awake(){
         background = GetComponentInChildren<SpriteRenderer>().gameObject;
@@ -51,13 +53,34 @@ public class CameraFollow : MonoBehaviour
         } */
         //Mates
         //Si 10 cuando ropeLenght == 17 y 42 cuando ropeLenght == 32
-        float desiredSize = rope.ropeLenght * 42f / 32f;
-        //-------
+        float desiredSize = 10; //= rope.ropeLenght * 42f / 32f;
+                           //-------
+        if (rope.ropeLenght < 30)
+        {
+            desiredSize = 10;
+            //cameraLimitLeft.transform.localPosition = new Vector3(-13, 0, 0);
+            //cameraLimitRight.transform.localPosition = new Vector3(13, 0, 0);
+        }
 
-        Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, desiredSize,smoothSpeed);
-        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize,10,42);
+
+        if ((rope.ropeLenght > 17 )&& (rope.ropeLenght<30))
+        {
+            desiredSize = 20;
+            //cameraLimitLeft.transform.localPosition = new Vector3(-27, 0, 0);
+            //cameraLimitRight.transform.localPosition = new Vector3(27, 0, 0);
+        }
+        if (rope.ropeLenght > 30) 
+        {
+            desiredSize = 42;
+        //    cameraLimitLeft.transform.localPosition = new Vector3(-56, 0, 0);
+        //    cameraLimitRight.transform.localPosition = new Vector3(56, 0, 0);
+        }
+
+
+        Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, desiredSize, 0.01f);
+        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 10, 42);
         backgroundSize = Mathf.Clamp(backgroundSize, 1, 4.5f);
-        background.transform.localScale = new Vector3(backgroundSize,backgroundSize,backgroundSize);
+        background.transform.localScale = new Vector3(backgroundSize, backgroundSize, backgroundSize);
 
     }
 }
