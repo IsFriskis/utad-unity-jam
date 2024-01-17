@@ -5,8 +5,11 @@ using UnityEngine;
 
 public class ArcherScript : BasicEnemyScript
 {
-    //Almacenamos la posicion del npc y la del jugador
-    private Vector2 myPosition;
+    public GameObject arrow;
+    public Transform arrowPosition;
+    private float attackDelay = 7f;
+    private float attackTimer = 0f;
+    private bool isAttacking = true;
 
     void Start()
     {
@@ -15,12 +18,25 @@ public class ArcherScript : BasicEnemyScript
         attackDamage = 15;
         deathTimer = 15f;
         detectionRange = 10;
+        
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        FollowViewPlayer();
-        Attack();
+        LookAtPlayer();
+        if (!isStunned)
+        {
+            if (isAttacking)
+            {
+                attackTimer += Time.deltaTime;
+                if (attackTimer >= attackDelay)
+                {
+                    attackTimer = 0;
+                    isAttacking = false;
+                }
+            }
+            IALogic();
+        }
     }
 
     public override void TakeDamage(int damage)
@@ -32,32 +48,41 @@ public class ArcherScript : BasicEnemyScript
     {
         base.Die();
     }
-
-    public override void Attack()
+    public override void IALogic()
     {
-        myPosition = transform.position;
-        float distanceToPlayer = Vector2.Distance(myPosition, GameObject.FindGameObjectWithTag("Player").transform.position);
-        float distanceToGhostPlayer = Vector2.Distance(myPosition, GameObject.FindGameObjectWithTag("GhostPlayer").transform.position);
-
-        if (distanceToPlayer <= detectionRange)
+        float distanceToPlayer = Vector3.Distance(playableCharacter.transform.position, transform.position);
+        if (distanceToPlayer <= detectionRange && !isAttacking)
         {
+            isAttacking = true;
             anim.SetBool("isAttacking", true);
+            Attack();
         }
-
-        else if (distanceToGhostPlayer <= detectionRange)
+        if(distanceToPlayer >= detectionRange && !isAttacking)
         {
-            anim.SetBool("isAttacking", true);
-
-        }
-        else
-        {
+            isAttacking= false;
             anim.SetBool("isAttacking", false);
         }
     }
-
-    public override void IALogic()
+    public override void Attack()
     {
-        throw new System.NotImplementedException();
+        if(!isStunned && !isDead)
+        {
+            Instantiate(arrow, arrowPosition.position, Quaternion.identity);
+        }
+    }
+
+    void LookAtPlayer()
+    {
+        Vector3 archerPos = transform.position;
+        Vector3 knightPos = playableCharacter.transform.position;
+        if(knightPos.x <= archerPos.x)
+        {
+            gameObject.GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else if (knightPos.x >= archerPos.x)
+        {
+            gameObject.GetComponent<SpriteRenderer>().flipX = false;
+        }
     }
 }
 

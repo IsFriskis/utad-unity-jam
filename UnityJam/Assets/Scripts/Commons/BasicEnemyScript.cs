@@ -9,14 +9,10 @@ public abstract class BasicEnemyScript : MonoBehaviour
 {
     [SerializeField]
     public int maxHealth;
-    //La mecanica de la armadura podriamos hacer que el espiritu pueda quitar la armadura y asi quita la reduccion de da�o. Pudiendo ahorrar asi ciertos enemigos
     [SerializeField]
     public int currentHealth;
-
-    //La creacion de espiritus
     [SerializeField]
     public int attackDamage;
-
     [SerializeField]
     protected float velocity;
     [SerializeField]
@@ -26,6 +22,7 @@ public abstract class BasicEnemyScript : MonoBehaviour
     [SerializeField]
     public GameObject enemyPartner;
     public bool isStunned;
+    public bool isDead = false;
 
     protected bool lookingLeft;
 
@@ -35,7 +32,6 @@ public abstract class BasicEnemyScript : MonoBehaviour
     [SerializeField]
     public GameObject playableCharacter;
 
-    //Waypoint logic for patrolling
     [SerializeField]
     protected GameObject[] waypoints;
 
@@ -56,11 +52,6 @@ public abstract class BasicEnemyScript : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
     }
-    void Start()
-    {
-       
-    }
-
     void FixedUpdate()
     {
         if(lookingLeft)
@@ -76,7 +67,7 @@ public abstract class BasicEnemyScript : MonoBehaviour
     public abstract void Attack();
 
     public abstract void IALogic();
-    //Se ajusta la posicion del enemigo para que siga la direccion del jugador cuando entre dentro de su rang
+    
     
     public virtual void TakeDamage(int damage)
     {
@@ -109,8 +100,6 @@ public abstract class BasicEnemyScript : MonoBehaviour
         }
 
         StartCoroutine(StunTimer());
-        
-
     }
 
     private IEnumerator StunTimer()
@@ -134,6 +123,7 @@ public abstract class BasicEnemyScript : MonoBehaviour
     }
     public virtual void Die()
     {
+        isDead = true;
         anim.SetBool("isDead",true);
         Destroy(gameObject, 10f);
     }
@@ -143,36 +133,14 @@ public abstract class BasicEnemyScript : MonoBehaviour
         Vector2 npcPosition = transform.position;
         Vector2 playerPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
         Vector2 playerGhostPosition = GameObject.FindGameObjectWithTag("GhostPlayer").transform.position;
- 
-        float distance = Vector2.Distance(npcPosition,playerPosition);
+
+        float distance = Vector2.Distance(npcPosition, playerPosition);
         float distanceGhost = Vector2.Distance(npcPosition, playerGhostPosition);
- 
-        if(distance <= detectionRange) 
+
+        if(distance <= detectionRange)
         {
             bool knightIsToTheRight = (playerPosition.x > npcPosition.x);
- 
-            if (knightIsToTheRight)
-            {
-                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-            }
-            else
-            {
-                transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-            }
-        }
-        if(distanceGhost <= detectionRange)
-        {
- 
-            bool knightIsToTheRight = (playerGhostPosition.x > npcPosition.x);
- 
-            if (knightIsToTheRight)
-            {
-                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-            }
-            else
-            {
-                transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-            }
+            lookingLeft = knightIsToTheRight;
         }
     }
 }

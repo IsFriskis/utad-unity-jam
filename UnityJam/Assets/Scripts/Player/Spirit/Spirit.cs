@@ -5,9 +5,9 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.Serialization;
 using UnityEngine;
 
-public class Spirit: MonoBehaviour
+public class Spirit : MonoBehaviour
 {
-    
+
 
     [SerializeField] float life;
     [SerializeField] float mana;
@@ -33,7 +33,7 @@ public class Spirit: MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         isAlive = true;
-     
+
 
     }
     // Start is called before the first frame update
@@ -110,7 +110,7 @@ public class Spirit: MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.DownArrow))
                 {
                     animator.SetTrigger("Is_Rolling");
-                    
+
                 }
             }
             //Detectamos si la vida del personaje es 0 y llamamos a la función de muerte
@@ -118,11 +118,11 @@ public class Spirit: MonoBehaviour
             {
                 Death();
                 isAlive = false;
-                
+
             }
         }
     }
- 
+
     void Jump()
     {
 

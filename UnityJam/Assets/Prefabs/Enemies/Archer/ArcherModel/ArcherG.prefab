@@ -57,7 +57,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6ae985cd4a6bed846ad22630b434b60b, type: 2}
+  - {fileID: 2100000, guid: 2cb60bf444f4da14ab75b0f26ef1296f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -79,7 +79,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 726327372, guid: d64b603b8d0abb04d86ff5c166578003, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 1, b: 1, a: 0.5882353}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -170,6 +170,8 @@ MonoBehaviour:
   speed: 0
   playableCharacter: {fileID: 0}
   waypoints: []
+  arrow: {fileID: 0}
+  arrowPosition: {fileID: 0}
 --- !u!1 &953883166102478970
 GameObject:
   m_ObjectHideFlags: 0

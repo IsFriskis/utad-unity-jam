@@ -7,7 +7,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    
     [SerializeField] float life;
     [SerializeField] float mana;
     [SerializeField] float sprint = 1f; //Multiplicador de la velocidad base cuando corre
@@ -23,7 +22,7 @@ public class Player : MonoBehaviour
 
     public int attackDamage;
     public Transform attackPoint;
-    public float attackRange =0.35f;
+    public float attackRange = 0.35f;
     public LayerMask enemyLayer;
 
 
@@ -32,7 +31,7 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         isAlive = true;
-     
+
 
     }
     // Start is called before the first frame update
@@ -50,7 +49,7 @@ public class Player : MonoBehaviour
             isOnGround = true;
             isSprinting = false;
             Vector3 movimiento = Vector3.zero;
-            
+
             if (Input.GetKey(KeyCode.A))
             {
                 movimiento -= transform.right;
@@ -81,7 +80,7 @@ public class Player : MonoBehaviour
             //Desplazamos el personaje a una velocidad
             float speed = initialSpeed;
 
-            if (Input.GetKey(KeyCode.LeftControl) && (isOnGround)) 
+            if (Input.GetKey(KeyCode.LeftControl) && (isOnGround))
             {
                 speed = initialSpeed * sprint;
                 isSprinting = true;
@@ -111,7 +110,7 @@ public class Player : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.S))
                 {
                     animator.SetTrigger("Is_Rolling");
-                    
+
                 }
             }
             //Detectamos si la vida del personaje es 0 y llamamos a la función de muerte
@@ -119,29 +118,29 @@ public class Player : MonoBehaviour
             {
                 Death();
                 isAlive = false;
-                
+
             }
         }
     }
- 
+
     void Jump()
     {
-       
+
         if (isOnGround)
         {
             if (isSprinting)
-            rb.AddForce(Vector2.up * (jumpForce * sprint)  , ForceMode2D.Impulse);
+                rb.AddForce(Vector2.up * (jumpForce * sprint), ForceMode2D.Impulse);
             else
             {
                 rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             }
-            
+
         }
     }
     void Attack()
     {
         animator.SetTrigger("Is_OnAttack");
-        Collider2D[] hitEnemy=Physics2D.OverlapCircleAll(attackPoint.position,attackRange,enemyLayer);
+        Collider2D[] hitEnemy = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
         foreach (Collider2D enemy in hitEnemy)
         {
             enemy.GetComponent<BasicEnemyScript>().TakeDamage(attackDamage);
