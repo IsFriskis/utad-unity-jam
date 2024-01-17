@@ -16,7 +16,7 @@ public class Spirit : MonoBehaviour
     [SerializeField] float mana;
     [SerializeField] float sprint = 1f; //Multiplicador de la velocidad base cuando corre
     [SerializeField] float jumpForce = 5f; //Fuerza del salto
-    [SerializeField] float rayDistance = 0.2f; //Distancia máxima del suelo que habilita poder saltar
+    [SerializeField] float rayDistance = 0.2f; //Distancia mï¿½xima del suelo que habilita poder saltar
     [SerializeField] float initialSpeed = 3.0f; //Velocidad base del personaje
     private Rigidbody2D rb;
     private Animator animator;
@@ -30,7 +30,17 @@ public class Spirit : MonoBehaviour
     public GameObject bullet;
     private GameObject fireBullet;
     [SerializeField]private int bulletSpeed;
+    [SerializeField] private float hurtForce = 2.0f;
+    [SerializeField] private string enemyHitboxTag;
+    private bool receiveDamage = false;
 
+    [Header("Coyote Time")]
+    [SerializeField] private float coyoteTime = 0.1f;
+    [SerializeField] private bool isCoyoteTime = false;
+    private float timeInCoyoteTime;
+    [Header("Jump Buffer And Jump Time")]
+    [SerializeField] private float jumpBufferTime = 0.1f;
+    private float jumpBufferCounter;
 
 
 
@@ -53,8 +63,9 @@ public class Spirit : MonoBehaviour
     private void Update()
 
     {
+        animator.SetFloat("Speed_Y", rb.velocity.y);
         //Detectamos si el Player esta vivo
-        if (isAlive)
+        if (isAlive && !receiveDamage)
         {
             isOnGround = true;
             isSprinting = false;
@@ -87,18 +98,6 @@ public class Spirit : MonoBehaviour
             if (movimiento.magnitude > 1.0f)
             { movimiento.Normalize(); }
 
-            //Lanzamos un RayCast para detectar si el Player esta tocando el suelo
-            if (Physics2D.Raycast(this.transform.position, Vector2.down, rayDistance, solidLayer))
-            {
-                isOnGround = true;
-
-            }
-            else
-            {
-                isOnGround = false;
-                animator.SetTrigger("Is_Jumping");
-            }
-
             //Desplazamos el personaje a una velocidad
             float speed = initialSpeed;
 
@@ -114,14 +113,28 @@ public class Spirit : MonoBehaviour
                 animator.SetBool("Is_Moving", false);
             }
 
-
-            //Llamamos a la función de salto y en el caso que este tocando el suelo le permitiremos saltar
-            if (Input.GetKeyDown(KeyCode.UpArrow))
+            //--------------------SALTO----------------------------------------------
+            //DetecciÃ³n de Coyote Time
+            if(!isOnGround && isCoyoteTime){
+                timeInCoyoteTime += Time.deltaTime;
+                if(timeInCoyoteTime > coyoteTime){
+                    isCoyoteTime = false;
+                }
+            }
+            //Jump Buffer
+            JumpBufferControl();
+            //Llamamos a la funciï¿½n de salto y en el caso que este tocando el suelo le permitiremos saltar
+            if(jumpBufferCounter >= 0)
             {
                 Jump();
             }
+            // Variable Jump
+            if (Input.GetKeyUp(KeyCode.UpArrow) && !isOnGround && (rb.velocity.y > 0)){
+                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y/2f);
+            }
+            //--------------------------------------------------------------------
 
-            //Llamamos a la función de ataque
+            //Llamamos a la funciï¿½n de ataque
             if (Input.GetKeyDown(KeyCode.RightControl))
             {
                 Fire();
@@ -135,7 +148,7 @@ public class Spirit : MonoBehaviour
 
                 }
             }
-            //Detectamos si la vida del personaje es 0 y llamamos a la función de muerte
+            //Detectamos si la vida del personaje es 0 y llamamos a la funciï¿½n de muerte
             if (mana <= 0)
             {
                 Death();
@@ -150,24 +163,45 @@ public class Spirit : MonoBehaviour
         }
     }
 
+    void FixedUpdate(){
+        //Lanzamos un RayCast para detectar si el Player esta tocando el suelo
+        if (Physics2D.Raycast(this.transform.position, Vector2.down, rayDistance, solidLayer))
+        {
+            isOnGround = true;
+
+        }
+        else
+        {
+            isOnGround = false;
+        }
+        animator.SetBool("Is_Grounded", isOnGround);
+    }
     void Jump()
     {
-
-        if (isOnGround)
+        if (isOnGround || isCoyoteTime)
         {
-            if (isSprinting)
-                rb.AddForce(Vector2.up * (jumpForce * sprint), ForceMode2D.Impulse);
+            if (isSprinting){
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce * sprint);
+                jumpBufferCounter = 0;
+            }
             else
             {
-                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+                jumpBufferCounter = 0;
             }
 
         }
     }
-    //void Attack()
-    //{
-    //    animator.SetTrigger("Is_OnAttack");
-    //}
+
+    void JumpBufferControl(){
+        if(Input.GetKeyDown(KeyCode.UpArrow)){
+            jumpBufferCounter = jumpBufferTime;
+        }
+        else{
+            jumpBufferCounter -= Time.deltaTime;
+        }
+        
+    }
 
     void Death()
     {
@@ -182,7 +216,7 @@ public class Spirit : MonoBehaviour
             Collider2D colisionado = collision.collider;
             if (colisionado.CompareTag("rightLimit"))
             {
-                // Establecer la bandera de colisión en true
+                // Establecer la bandera de colisiï¿½n en true
                 rightLimit = true;
 
             }
@@ -192,11 +226,22 @@ public class Spirit : MonoBehaviour
             Collider2D colisionado = collision.collider;
             if (colisionado.CompareTag("leftLimit"))
             {
-                // Establecer la bandera de colisión en true
+                // Establecer la bandera de colisiï¿½n en true
                 leftLimit = true;
-
-
             }
+        }
+
+        if (collision.collider.CompareTag (enemyHitboxTag) && !receiveDamage) 
+        {
+            receiveDamage = true;
+            animator.SetTrigger("Damage");
+            if(collision.gameObject.transform.position.x > transform.position.x){ //Si enemigo esta a la derecha
+                rb.velocity = new Vector2(-hurtForce, rb.velocity.y);
+            }
+            else{
+                rb.velocity = new Vector2(hurtForce, rb.velocity.y);
+            }
+            
         }
     }
 
@@ -208,7 +253,7 @@ public class Spirit : MonoBehaviour
             Collider2D colisionado = collision.collider;
             if (colisionado.CompareTag("rightLimit"))
             {
-                // Establecer la bandera de colisión en true
+                // Establecer la bandera de colisiï¿½n en true
                 rightLimit = false;
 
             }
@@ -218,7 +263,7 @@ public class Spirit : MonoBehaviour
             Collider2D colisionado = collision.collider;
             if (colisionado.CompareTag("leftLimit"))
             {
-                // Establecer la bandera de colisión en true
+                // Establecer la bandera de colisiï¿½n en true
                 leftLimit = false;
 
             }
@@ -252,6 +297,11 @@ public class Spirit : MonoBehaviour
             fireBullet.GetComponent<Rigidbody2D>().AddForce(Vector2.left * bulletSpeed, ForceMode2D.Impulse);
         }
     
+    }
+
+    public void FinishHitAnimation()
+    {
+        receiveDamage = false;
     }
 
 }

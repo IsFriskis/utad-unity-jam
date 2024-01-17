@@ -15,9 +15,12 @@ public class Player : MonoBehaviour
     [SerializeField] float mana;
     [SerializeField] float sprint = 1f; //Multiplicador de la velocidad base cuando corre
     [SerializeField] float jumpForce = 5f; //Fuerza del salto
-    [SerializeField] float rayDistance = 0.2f; //Distancia máxima del suelo que habilita poder saltar
+    [SerializeField] float rayDistance = 0.2f; //Distancia mï¿½xima del suelo que habilita poder saltar
     [SerializeField] float initialSpeed = 3.0f; //Velocidad base del personaje
     [SerializeField] private GameObject Spirit;
+    [SerializeField] private float hurtForce = 2.0f;
+    [SerializeField] private string enemyHitboxTag;
+    [SerializeField] ParticleSystem particles;
     private Rigidbody2D rb;
     private bool dir;
     private Animator animator;
@@ -26,11 +29,16 @@ public class Player : MonoBehaviour
     public LayerMask solidLayer; //Define la capa que se utilizara para saber si esta tocando un objeto solido y puede saltar
     public LayerMask playerLayer;
     private bool isAlive;
-    private bool reciveDamage = false;
+    private bool receiveDamage = false;
+    [SerializeField] private HUDScript hud;
 
-
-
-
+    [Header("Coyote Time")]
+    [SerializeField] private float coyoteTime = 0.1f;
+    [SerializeField] private bool isCoyoteTime = false;
+    private float timeInCoyoteTime;
+    [Header("Jump Buffer And Jump Time")]
+    [SerializeField] private float jumpBufferTime = 0.1f;
+    private float jumpBufferCounter;
 
     private void Awake()
     {
@@ -49,10 +57,9 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        print(reciveDamage);
         animator.SetFloat("Speed_Y", rb.velocity.y);
         //Detectamos si el Player esta vivo
-        if (isAlive && !reciveDamage)
+        if (isAlive && !receiveDamage)
         {
 
             isOnGround = true;
@@ -80,25 +87,13 @@ public class Player : MonoBehaviour
             if (movimiento.magnitude > 1.0f)
             { movimiento.Normalize(); }
 
-
-            //Lanzamos un RayCast para detectar si el Player esta tocando el suelo
-            if (Physics2D.Raycast(this.transform.position, Vector2.down, rayDistance, solidLayer))
-            {
-                isOnGround = true;
-                animator.SetBool("Is_Grounded", true);
-            }
-            else
-            {
-                isOnGround = false;
-                animator.SetBool("Is_Grounded",false);
-            }
-
             //Desplazamos el personaje a una velocidad
             float speed = initialSpeed;
 
             if (Input.GetKey(KeyCode.LeftControl) && (isOnGround)) 
             {
                 speed = initialSpeed * sprint;
+                PlayParticles();
                 isSprinting = true;
             }
 
@@ -107,15 +102,27 @@ public class Player : MonoBehaviour
             {
                 animator.SetBool("Is_Moving", false);
             }
-
-
-            //Llamamos a la función de salto y en el caso que este tocando el suelo le permitiremos saltar
-            if (Input.GetKeyDown(KeyCode.W))
+            //--------------------SALTO----------------------------------------------
+            //DetecciÃ³n de Coyote Time
+            if(!isOnGround && isCoyoteTime){
+                timeInCoyoteTime += Time.deltaTime;
+                if(timeInCoyoteTime > coyoteTime){
+                    isCoyoteTime = false;
+                }
+            }
+            //Jump Buffer
+            JumpBufferControl();
+            //Llamamos a la funciï¿½n de salto y en el caso que este tocando el suelo le permitiremos saltar
+            if(jumpBufferCounter >= 0)
             {
                 Jump();
             }
-
-            //Llamamos a la función de ataque
+            // Variable Jump
+            if (Input.GetKeyUp(KeyCode.W) && !isOnGround && (rb.velocity.y > 0)){
+                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y/2f);
+            }
+            //--------------------------------------------------------------------
+            //Llamamos a la funciï¿½n de ataque
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 Attack();
@@ -131,7 +138,7 @@ public class Player : MonoBehaviour
                     
                 }
             }
-            //Detectamos si la vida del personaje es 0 y llamamos a la función de muerte
+            //Detectamos si la vida del personaje es 0 y llamamos a la funciï¿½n de muerte
             if (life <= 0)
             {
                 Death();
@@ -140,28 +147,48 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    void FixedUpdate(){
+        //Lanzamos un RayCast para detectar si el Player esta tocando el suelo
+        if (Physics2D.Raycast(this.transform.position, Vector2.down, rayDistance, solidLayer))
+        {
+            isOnGround = true;
+            isCoyoteTime = true;
+            timeInCoyoteTime = 0;
+        }
+        else
+        {
+            isOnGround = false;
+        }
+        animator.SetBool("Is_Grounded", isOnGround);
+    }
  
     public void Jump()
     {
-
-        if (isOnGround)
+        if (isOnGround || isCoyoteTime)
         {
+            PlayParticles();
             if (isSprinting)
             {
-                //rb.AddForce(Vector2.up * (jumpForce * sprint), ForceMode2D.Impulse);
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce * sprint);
-               // animator.SetFloat("Speed_Y", rb.velocity.y);
-                
+                jumpBufferCounter = 0;   
             }
             else
             {
-                //rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-                //animator.SetFloat("Speed_Y", rb.velocity.y);
-                
+                jumpBufferCounter = 0;   
             }
             
         }
+    }
+    void JumpBufferControl(){
+        if(Input.GetKeyDown(KeyCode.W)){
+            jumpBufferCounter = jumpBufferTime;
+        }
+        else{
+            jumpBufferCounter -= Time.deltaTime;
+        }
+        
     }
     public void Attack()
     {
@@ -182,8 +209,6 @@ public class Player : MonoBehaviour
     {
         if (dir)        {
             gameObject.transform.localScale = new Vector3(2.0f, 2.0f, 2.0f);
-            
-
         }
         else 
         {
@@ -193,16 +218,25 @@ public class Player : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log(collision.collider.tag);
-        if (collision.collider.CompareTag ("Sword") ) 
+        if (collision.collider.CompareTag (enemyHitboxTag) && !receiveDamage) //Si es ataque enemigo y no esta en animaciÃ³n de dolor
         {
+            receiveDamage = true;
             animator.SetTrigger("Damage");
-            reciveDamage = true;
+            if(collision.gameObject.transform.position.x > transform.position.x){ //Si enemigo esta a la derecha
+                rb.velocity = new Vector2(-hurtForce, rb.velocity.y);
+            }
+            else{
+                rb.velocity = new Vector2(hurtForce, rb.velocity.y);
+            }
+            
         }
     }
     public void FinishHitAnimation()
     {
-        reciveDamage = false;
-      
+        receiveDamage = false;
+    }
+
+    private void PlayParticles(){
+        particles.Play();
     }
 }
