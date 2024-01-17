@@ -382,7 +382,7 @@ GameObject:
   - component: {fileID: 8653914416112569860}
   - component: {fileID: 8653914416112569863}
   - component: {fileID: 1598388883022751814}
-  m_Layer: 11
+  m_Layer: 8
   m_Name: Portal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -648,7 +648,7 @@ GameObject:
   - component: {fileID: 8653914417009101488}
   - component: {fileID: 8653914417009101489}
   - component: {fileID: 6135652844150626929}
-  m_Layer: 11
+  m_Layer: 8
   m_Name: Portal2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
