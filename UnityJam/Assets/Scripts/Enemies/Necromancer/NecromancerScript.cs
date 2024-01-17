@@ -32,39 +32,48 @@ public class NecromancerScript : BasicEnemyScript
     private bool isAttacking = false;
     private bool isStrafing = false;
 
+    void Start()
+    {
+        maxHealth = 500;
+        currentHealth = maxHealth;
+        attackDamage = 30;
+        speed = 1;
+    }
     void Update()
     {
-        
-        if (isSummoning)
+        if (!isDead)
         {
-            summonTimer += Time.deltaTime;
-            if (summonTimer >= summonDelay)
+            if (isSummoning)
             {
-                summonTimer = 0f;
-                isSummoning = false;
+                summonTimer += Time.deltaTime;
+                if (summonTimer >= summonDelay)
+                {
+                    summonTimer = 0f;
+                    isSummoning = false;
+                }
             }
-        }
-         
-        if (isAttacking)
-        {
-            attackTimer += Time.deltaTime;
-            if (attackTimer >= attackDelay)
+
+            if (isAttacking)
             {
-                attackTimer = 0f;
-                isAttacking = false;
+                attackTimer += Time.deltaTime;
+                if (attackTimer >= attackDelay)
+                {
+                    attackTimer = 0f;
+                    isAttacking = false;
+                }
             }
-        }
-        if (isStrafing)
-        {
-            strafeTimer += Time.deltaTime;
-            if (strafeTimer >= strafeDelay)
+            if (isStrafing)
             {
-                strafeTimer = 0f;
-                isStrafing = false;
+                strafeTimer += Time.deltaTime;
+                if (strafeTimer >= strafeDelay)
+                {
+                    strafeTimer = 0f;
+                    isStrafing = false;
+                }
             }
+            FollowViewPlayer();
+            IALogic();
         }
-        FollowViewPlayer();
-        IALogic();
     }
 
     public override void IALogic()
@@ -72,22 +81,21 @@ public class NecromancerScript : BasicEnemyScript
         float distanceToPlayer = Vector3.Distance(playableCharacter.transform.position, transform.position);
         Vector3 movimiento = Vector3.zero;
         
-            
-
         if (!isSummoning)
         {
  
             isSummoning = true;
+            anim.SetTrigger("isSummoning");
             SummonSkeleton();
         } 
         else if (!isAttacking)
         {
             isAttacking = true;
+            anim.SetTrigger("isAttacking");
             Attack();
         }
         if(!isStrafing || strafeTimer < 0.5f)
         {
-
             isStrafing = true;
             if (distanceToPlayer < 7)
             {
@@ -143,12 +151,12 @@ public class NecromancerScript : BasicEnemyScript
 
         if (lookingLeft)
         {
-            spawnPosition.x -= 1f;
+            spawnPosition.x += 1f;
             Instantiate(skeletonPrefab, spawnPosition, Quaternion.identity);
         }
         else
         {
-            spawnPosition.x += 1f;
+            spawnPosition.x -= 1f;
             Instantiate(skeletonPrefab, spawnPosition, Quaternion.identity);
         }
         
@@ -171,11 +179,12 @@ public class NecromancerScript : BasicEnemyScript
         currentHealth -= damage;
         if(currentHealth <= 0)
         {
+            isDead = true;
             Die();
         }
         else
         {
-            anim.SetTrigger("Hit");
+            anim.SetTrigger("isHurt");
         }
     }
 
@@ -184,7 +193,21 @@ public class NecromancerScript : BasicEnemyScript
         speed = 0;
         GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         GetComponent<Rigidbody2D>().freezeRotation = true;
-        anim.SetTrigger("Death");
+        anim.SetBool("isDead",true);
         Destroy(gameObject, 4.4f);
+    }
+
+    void LookAtPlayer()
+    {
+        Vector3 archerPos = transform.position;
+        Vector3 knightPos = playableCharacter.transform.position;
+        if (knightPos.x <= archerPos.x)
+        {
+            gameObject.GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else if (knightPos.x >= archerPos.x)
+        {
+            gameObject.GetComponent<SpriteRenderer>().flipX = false;
+        }
     }
 }
