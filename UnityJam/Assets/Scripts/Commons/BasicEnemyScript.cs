@@ -1,23 +1,43 @@
+using Assets.Scripts.Enemies;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
-public class BasicEnemyScript : MonoBehaviour
+public abstract class BasicEnemyScript : MonoBehaviour
 {
     [SerializeField]
     public int maxHealth;
-    //La mecanica de la armadura podriamos hacer que el espiritu pueda quitar la armadura y asi quita la reduccion de daño. Pudiendo ahorrar asi ciertos enemigos
-    //La creacion de espiritus.
-    [SerializeField] 
-    public int armorPoints;
     [SerializeField]
-    public int dmgDealt;
+    public int currentHealth;
     [SerializeField]
-    public float deathTimer;
-    //Si la vida de algun enemigo es igual a 0 quedara stunned y tendra un deathTimer, si ambas formas estan stunned dentro del periodo del deathTimer el enemigo morira
+    public int attackDamage;
+    [SerializeField]
+    protected float speed;
+    [SerializeField]
+    protected float detectionRange;
+    [SerializeField]
+    protected float deathTimer;
+    [SerializeField]
+    public GameObject enemyPartner;
     public bool isStunned;
+    public bool isDead = false;
 
-    protected int currentHealth;
+    protected bool lookingLeft;
+
+    
+
+    [SerializeField]
+    public GameObject playableCharacter;
+
+    [SerializeField]
+    protected GameObject[] waypoints;
+
+    protected int currentWaypoint = 0;
+
+    private bool isInvulnerable = false;
+
 
     protected Animator anim;
     protected CapsuleCollider2D capCol2D;
@@ -31,58 +51,91 @@ public class BasicEnemyScript : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
     }
-    void Start()
-    {
-        currentHealth = maxHealth;
-    }
-
     void FixedUpdate()
     {
-        
-    }
-
-    public virtual void MeleeAttack()
-    {
-        //Reproducir animaciones y establecer los colliders correspondientes para que encuentre el TAG "PLAYER" y le cause daño
-    }
-    public virtual void RangedAttack()
-    {
-        //Reproducir animaciones y establecer los colliders correspondientes para que encuentre el TAG "PLAYER" y le cause daño.
-        //Ademas de tener que crear e instaciar los proyectiles propios de cada clase.
-    }
-
-    public void TakeDamage(int damage)
-    {
-        //Introducir la lógica de que el collider de cuando el TAG "Player" entre en colision con el del TAG "Enemy" se reste la vida
-        //Causada por el daño establecido por el jugador
-        if(currentHealth <= 0)
+        if(lookingLeft)
         {
-            Die();
+            spriteRenderer.flipX = false;
+        } 
+        else if (!lookingLeft)
+        {
+            spriteRenderer.flipX = true;
         }
     }
 
-    protected void Die()
+    public abstract void Attack();
+
+    public abstract void IALogic();
+    
+    
+    public virtual void TakeDamage(int damage)
     {
-        //Comprobar si ambas formas estan stunneadas y entran dentro del deathTimer para poder morir
-        //Pondremos la animacion de morir de cada uno de los NPC
-        Destroy(gameObject);
+        if (!isInvulnerable)
+        {
+            currentHealth -= damage;
+            anim.SetTrigger("isHurt");
+
+            if (currentHealth <= 0)
+            {   
+               GetStunned();
+            }
+        }
     }
 
-    //Se ajusta la posicion del enemigo para que siga la direccion del jugador cuando entre dentro de su rango
+    protected void GetStunned()
+    {
+        isStunned = true;
+
+        if (anim != null)
+        {
+            anim.SetBool("isStunned", true);
+        }
+        
+        if (isStunned && enemyPartner.GetComponent<BasicEnemyScript>().isStunned)
+        {
+            enemyPartner.GetComponent<BasicEnemyScript>().Die();
+            Die();
+        }
+
+        StartCoroutine(StunTimer());
+    }
+
+    private IEnumerator StunTimer()
+    {
+        isInvulnerable = true;
+        yield return new WaitForSeconds(deathTimer);
+        isStunned = false;
+        isInvulnerable = false;
+
+        if (anim != null)
+        {
+            anim.SetBool("isStunned", false);
+            RegenerateHealth();
+        }
+    }
+    protected virtual void RegenerateHealth()
+    {
+        currentHealth = maxHealth / 2;
+    }
+    public virtual void Die()
+    {
+        isDead = true;
+        anim.SetBool("isDead",true);
+        Destroy(gameObject, 10f);
+    }
+
     protected void FollowViewPlayer()
     {
         Vector2 npcPosition = transform.position;
         Vector2 playerPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
+        Vector2 playerGhostPosition = GameObject.FindGameObjectWithTag("GhostPlayer").transform.position;
 
-        bool knightIsToTheRight = (playerPosition.x > npcPosition.x);
+        float distance = Vector2.Distance(npcPosition, playerPosition);
+        float distanceGhost = Vector2.Distance(npcPosition, playerGhostPosition);
 
-        if (knightIsToTheRight)
+        if(distance <= detectionRange)
         {
-            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-        }
-        else
-        {
-            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            lookingLeft = (playerPosition.x < npcPosition.x);
         }
     }
 }

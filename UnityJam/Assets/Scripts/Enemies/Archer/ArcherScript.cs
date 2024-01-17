@@ -5,58 +5,84 @@ using UnityEngine;
 
 public class ArcherScript : BasicEnemyScript
 {
-    //Almacenamos la posicion del npc y la del jugador
-    private Vector2 myPosition;
-    private Vector2 playerPosition;
-
-    //Hay que instanciar un gameobject arrow para que el proyectil pueda impactar al jugador
     public GameObject arrow;
-    //Hay que comprobar el collider del arrow para realizar daño si impacta con el rigidbody del player
-    public GameObject arrowPosition;
-    //Podemos modificar el rango del ataque a melee
-    public float meleeAttackRange = 2f;
+    public Transform arrowPosition;
+    private float attackDelay = 7f;
+    private float attackTimer = 0f;
+    private bool isAttacking = true;
 
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        anim = GetComponentInChildren<Animator>();
-    }
     void Start()
     {
+        maxHealth = 100;
+        currentHealth = maxHealth;
+        attackDamage = 15;
+        deathTimer = 15f;
+        detectionRange = 10;
         
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        FollowViewPlayer();
-        myPosition = transform.position;
-        playerPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
-        float distance = Vector2.Distance(myPosition, playerPosition);
-        //Debug.Log(distance);
+        LookAtPlayer();
+        if (!isStunned)
+        {
+            if (isAttacking)
+            {
+                attackTimer += Time.deltaTime;
+                if (attackTimer >= attackDelay)
+                {
+                    attackTimer = 0;
+                    isAttacking = false;
+                }
+            }
+            IALogic();
+        }
+    }
 
-        //Parametros de animaciones con respecto a la distancia del jugador. Podriamos realizar un behaviour tree para que intente mantener la distancia con el jugador
-        //Una vez sea detectado para poder disparar a distancia de forma segura.
-        //Implementar colliders
-        if (distance <= meleeAttackRange)
+    public override void TakeDamage(int damage)
+    {   
+        base.TakeDamage(damage);
+    }
+
+    public override void Die()
+    {
+        base.Die();
+    }
+    public override void IALogic()
+    {
+        float distanceToPlayer = Vector3.Distance(playableCharacter.transform.position, transform.position);
+        if (distanceToPlayer <= detectionRange && !isAttacking)
         {
-            //Debug.Log("Rango de ataque a melee");
-            anim.SetBool("MeleeAttack", true);
-            anim.SetBool("RangedAttack", false);
-            anim.SetBool("Stop", false);
+            isAttacking = true;
+            anim.SetBool("isAttacking", true);
+            Attack();
         }
-        else if (distance > meleeAttackRange && distance <= 8f)
+        if(distanceToPlayer >= detectionRange && !isAttacking)
         {
-           // Debug.Log("Rango de ataque a distancia");
-            anim.SetBool("MeleeAttack", false);
-            anim.SetBool("RangedAttack", true);
-            anim.SetBool("Stop", false);
+            isAttacking= false;
+            anim.SetBool("isAttacking", false);
         }
-        else
+    }
+    public override void Attack()
+    {
+        if(!isStunned && !isDead)
         {
-            //Debug.Log("No hay enemigo");
-            anim.SetBool("MeleeAttack", false);
-            anim.SetBool("RangedAttack", false);
-            anim.SetBool("Stop", true);
+            Instantiate(arrow, arrowPosition.position, Quaternion.identity);
+        }
+    }
+
+    void LookAtPlayer()
+    {
+        Vector3 archerPos = transform.position;
+        Vector3 knightPos = playableCharacter.transform.position;
+        if(knightPos.x <= archerPos.x)
+        {
+            gameObject.GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else if (knightPos.x >= archerPos.x)
+        {
+            gameObject.GetComponent<SpriteRenderer>().flipX = false;
         }
     }
 }
+
