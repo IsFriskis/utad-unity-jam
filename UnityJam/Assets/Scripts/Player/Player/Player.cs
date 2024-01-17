@@ -11,7 +11,6 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] public float hp, maxHP;
-    [SerializeField] float mana;
     [SerializeField] float sprint = 1f; //Multiplicador de la velocidad base cuando corre
     [SerializeField] float jumpForce = 5f; //Fuerza del salto
     [SerializeField] float rayDistance = 0.2f; //Distancia m�xima del suelo que habilita poder saltar

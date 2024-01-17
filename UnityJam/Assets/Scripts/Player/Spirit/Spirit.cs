@@ -10,9 +10,6 @@ using UnityEngine;
 
 public class Spirit : MonoBehaviour
 {
-
-
-    [SerializeField] float life;
     [SerializeField] float mana, maxMana;
     [SerializeField] float sprint = 1f; //Multiplicador de la velocidad base cuando corre
     [SerializeField] float jumpForce = 5f; //Fuerza del salto
