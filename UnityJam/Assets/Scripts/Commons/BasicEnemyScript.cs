@@ -14,7 +14,7 @@ public abstract class BasicEnemyScript : MonoBehaviour
     [SerializeField]
     public int attackDamage;
     [SerializeField]
-    protected float velocity;
+    protected float speed;
     [SerializeField]
     protected float detectionRange;
     [SerializeField]
@@ -26,8 +26,7 @@ public abstract class BasicEnemyScript : MonoBehaviour
 
     protected bool lookingLeft;
 
-    [SerializeField]
-    public float speed;
+    
 
     [SerializeField]
     public GameObject playableCharacter;
@@ -77,8 +76,9 @@ public abstract class BasicEnemyScript : MonoBehaviour
             anim.SetTrigger("isHurt");
 
             if (currentHealth <= 0)
-            {
+            {   
                GetStunned();
+                Debug.Log("Estuneado");
             }
         }
     }
@@ -139,8 +139,7 @@ public abstract class BasicEnemyScript : MonoBehaviour
 
         if(distance <= detectionRange)
         {
-            bool knightIsToTheRight = (playerPosition.x > npcPosition.x);
-            lookingLeft = knightIsToTheRight;
+            lookingLeft = (playerPosition.x < npcPosition.x);
         }
     }
 }
