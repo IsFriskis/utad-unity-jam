@@ -143,8 +143,19 @@ public class Player : MonoBehaviour
         Collider2D[] hitEnemy = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
         foreach (Collider2D enemy in hitEnemy)
         {
-            enemy.GetComponent<BasicEnemyScript>().TakeDamage(attackDamage);
-            Debug.Log("Ha golpeado");
+            if(enemy.GetComponent<BasicEnemyScript>() != null)
+            {
+                enemy.GetComponent<BasicEnemyScript>().TakeDamage(attackDamage);
+                Debug.Log("Ha golpeado");
+            }
+            else
+            {
+                if(enemy.GetComponentInChildren<FlyingEyeScript>() != null)
+                {
+                    enemy.GetComponentInChildren<FlyingEyeScript>().TakeDamage(attackDamage);
+                    Debug.Log("Ha golpeado a un flying eye");
+                }
+            }
         }
     }
 

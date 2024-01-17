@@ -12,8 +12,7 @@ GameObject:
   - component: {fileID: 7328472905525913770}
   - component: {fileID: 7328472905525913771}
   - component: {fileID: 7328472905525913768}
-  - component: {fileID: 7520970915850213002}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FlyingEyeGraph
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,35 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa959d87f20162a4b8d5e105f6623294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 0
-  currentHealth: 0
-  attackDamage: 0
-  velocity: 0
-  detectionRange: 0
-  deathTimer: 0
-  enemyPartner: {fileID: 0}
-  isStunned: 0
-  isDead: 0
-  speed: 0
-  playableCharacter: {fileID: 0}
-  waypoints: []
   aiPath: {fileID: 7328472906134308755}
---- !u!58 &7520970915850213002
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7328472905525913774}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.35714287
 --- !u!1 &7328472906134308756
 GameObject:
   m_ObjectHideFlags: 0
@@ -161,7 +132,8 @@ GameObject:
   - component: {fileID: 7328472906134308754}
   - component: {fileID: 7328472906134308755}
   - component: {fileID: 7328472906134308752}
-  m_Layer: 0
+  - component: {fileID: 6638034078196677249}
+  m_Layer: 7
   m_Name: Fly
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -268,3 +240,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   target: {fileID: 0}
+--- !u!58 &6638034078196677249
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7328472906134308756}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
