@@ -61,6 +61,7 @@ namespace Assets.Scripts.Enemies.Bandit
                     if (distanceToPlayer <= attackRange)
                     {
                         Attack();
+
                     }
                     //Si el jugador esta en rango de deteccion pero no de ataque
                     //Muevete hacia él
