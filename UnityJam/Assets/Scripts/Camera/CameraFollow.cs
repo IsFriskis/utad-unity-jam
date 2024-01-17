@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-
+    [SerializeField] float limitLeft = -20f;
+    [SerializeField] Rope rope;
     public Transform target;
     public float smoothSpeed = 0.125f;
     public Vector2 locationOffset;
     public float rotationOffset;
     public bool canMove;
+    private GameObject background;
 
+    void Awake(){
+        background = GetComponentInChildren<SpriteRenderer>().gameObject;
+    }
     void FixedUpdate()
     {
         if (canMove)
@@ -28,7 +33,7 @@ public class CameraFollow : MonoBehaviour
 
     private void Update()
     {
-        if (target.position.x<-20)
+        if (target.position.x < limitLeft)
         {
             canMove = false;
         }
@@ -36,6 +41,24 @@ public class CameraFollow : MonoBehaviour
         {
             canMove = true;
         }
+        RopeDistance();
+    }
+
+    void RopeDistance(){
+        float backgroundSize = 1;
+        /* if(rope.ropeLenght <= 17){//Camara más pequeña
+            Camera.main.orthographicSize = 10;
+        } */
+        //Mates
+        //Si 10 cuando ropeLenght == 17 y 42 cuando ropeLenght == 32
+        float desiredSize = rope.ropeLenght * 42f / 32f;
+        //-------
+
+        Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, desiredSize,smoothSpeed);
+        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize,10,42);
+        backgroundSize = Mathf.Clamp(backgroundSize, 1, 4.5f);
+        background.transform.localScale = new Vector3(backgroundSize,backgroundSize,backgroundSize);
+
     }
 }
 

@@ -10,7 +10,7 @@ public class Rope : MonoBehaviour
     public LineRenderer line; //El Objeto debe tener un componente LineRender 
     public Transform posWarrior; // Posici�n desde donde nace la cuerda
     public Transform posSpirit; //Posici�n hasta donde llega la cuerda
-    private float ropeLenght; // Distancia entre ambos puntos de la cuerda
+    public float ropeLenght; // Distancia entre ambos puntos de la cuerda
     // Start is called before the first frame update
     void Start()
     {

@@ -13,7 +13,7 @@ public class Spirit : MonoBehaviour
 
 
     [SerializeField] float life;
-    [SerializeField] float mana;
+    [SerializeField] float mana, maxMana;
     [SerializeField] float sprint = 1f; //Multiplicador de la velocidad base cuando corre
     [SerializeField] float jumpForce = 5f; //Fuerza del salto
     [SerializeField] float rayDistance = 0.2f; //Distancia m�xima del suelo que habilita poder saltar
@@ -30,8 +30,13 @@ public class Spirit : MonoBehaviour
     public GameObject bullet;
     private GameObject fireBullet;
     [SerializeField]private int bulletSpeed;
+    [SerializeField]private float manaCost;
     [SerializeField] private float hurtForce = 2.0f;
     [SerializeField] private string enemyHitboxTag;
+    [SerializeField] private HUDScript hud;
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip nopeSound, hurtSound, jumpSound, fireBulletSound;
     private bool receiveDamage = false;
 
     [Header("Coyote Time")]
@@ -50,8 +55,7 @@ public class Spirit : MonoBehaviour
         animator = GetComponent<Animator>();
         rb.gravityScale = 0.5f;
         isAlive = true;
-
-
+        hud.maxMana = maxMana;
     }
     // Start is called before the first frame update
     void Start()
@@ -61,16 +65,14 @@ public class Spirit : MonoBehaviour
 
     // Update is called once per frame
     private void Update()
-
     {
         animator.SetFloat("Speed_Y", rb.velocity.y);
         //Detectamos si el Player esta vivo
         if (isAlive && !receiveDamage)
         {
-            isOnGround = true;
+            //isOnGround = true;
             isSprinting = false;
             Vector3 movimiento = Vector3.zero;
-
 
             if (Input.GetKey(KeyCode.LeftArrow))
             {
@@ -180,6 +182,7 @@ public class Spirit : MonoBehaviour
     {
         if (isOnGround || isCoyoteTime)
         {
+            audioSource.PlayOneShot(jumpSound);
             if (isSprinting){
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce * sprint);
                 jumpBufferCounter = 0;
@@ -211,8 +214,9 @@ public class Spirit : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         // Verificar si estamos colisionando con un objeto que tiene el tag especificado
-        if (collision.gameObject.CompareTag("Player"))
-        {
+        //if (collision.gameObject.CompareTag("Player"))
+        //{
+            print("HOla: "+collision.collider.gameObject.name);
             Collider2D colisionado = collision.collider;
             if (colisionado.CompareTag("rightLimit"))
             {
@@ -220,29 +224,16 @@ public class Spirit : MonoBehaviour
                 rightLimit = true;
 
             }
-        }
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            Collider2D colisionado = collision.collider;
+        //}
+        //if (collision.gameObject.CompareTag("Player"))
+        //{
+            //Collider2D colisionado = collision.collider;
             if (colisionado.CompareTag("leftLimit"))
             {
                 // Establecer la bandera de colisi�n en true
                 leftLimit = true;
             }
-        }
-
-        if (collision.collider.CompareTag (enemyHitboxTag) && !receiveDamage) 
-        {
-            receiveDamage = true;
-            animator.SetTrigger("Damage");
-            if(collision.gameObject.transform.position.x > transform.position.x){ //Si enemigo esta a la derecha
-                rb.velocity = new Vector2(-hurtForce, rb.velocity.y);
-            }
-            else{
-                rb.velocity = new Vector2(hurtForce, rb.velocity.y);
-            }
-            
-        }
+        //}
     }
 
     void OnCollisionExit2D(Collision2D collision)
@@ -269,6 +260,21 @@ public class Spirit : MonoBehaviour
             }
         }
     }
+    public void TakeDamage(float damage, float positionEnemy){
+        if(!receiveDamage){
+            receiveDamage = true;
+            animator.SetTrigger("Damage");
+            mana -= damage;
+            audioSource.PlayOneShot(hurtSound);
+            hud.ChangeMana(mana);
+            if(positionEnemy > transform.position.x){ //Si enemigo esta a la derecha
+                rb.velocity = new Vector2(-hurtForce, rb.velocity.y);
+            }
+            else{
+                rb.velocity = new Vector2(hurtForce, rb.velocity.y);
+            }
+        }
+    }
 
     public void RotateSpirit(bool dir)
     {
@@ -285,16 +291,25 @@ public class Spirit : MonoBehaviour
 
     public void Fire()
     {
-        GameObject fireBullet = Instantiate(bullet, spawnPoint.position, spawnPoint.rotation);
+        if(mana >= 5){
+            mana -= manaCost;
+            hud.ChangeMana(mana);
+            audioSource.PlayOneShot(fireBulletSound);
+            GameObject fireBullet = Instantiate(bullet, spawnPoint.position, Quaternion.identity);
 
-        if (transform.localScale.x == 1.5)
-        {
-            fireBullet.GetComponent<Rigidbody2D>().AddForce(Vector2.right * bulletSpeed, ForceMode2D.Impulse);
+            if (transform.localScale.x == 2) // Si esta mirando a la derecha
+            {
+                fireBullet.transform.rotation = Quaternion.Euler(0,0,90);
+                fireBullet.GetComponent<Rigidbody2D>().AddForce(Vector2.right * bulletSpeed, ForceMode2D.Impulse);
+            }
+            else
+            {
+                fireBullet.transform.rotation = Quaternion.Euler(0,0,-90);
+                fireBullet.GetComponent<Rigidbody2D>().AddForce(Vector2.left * bulletSpeed, ForceMode2D.Impulse);
+            }
         }
-
-        else
-        {
-            fireBullet.GetComponent<Rigidbody2D>().AddForce(Vector2.left * bulletSpeed, ForceMode2D.Impulse);
+        else{
+            audioSource.PlayOneShot(nopeSound);
         }
     
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class HUDScript : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class HUDScript : MonoBehaviour
     [SerializeField] Image heartImage, spiritImage;
     [SerializeField] Color normalColor;
     [SerializeField] Animator heartAnimator1,heartAnimator2,heartAnimator3;
+    [SerializeField] AudioClip gameOverSound, heartBeatSound;
     private Animator animator;
     private Image hudImage;
     
@@ -22,12 +24,16 @@ public class HUDScript : MonoBehaviour
     public void ChangeHealth(float value){
         heartImage.fillAmount = value / maxHealth;
         if (heartImage.fillAmount <= 0.1){ //******Low HP***
+            GetComponentInParent<AudioSource>().PlayOneShot(heartBeatSound);
             animator.SetBool("LowHP",true);
             heartAnimator1.SetBool("LowHP",true);
             heartAnimator2.SetBool("LowHP",true);
             heartAnimator3.SetBool("LowHP",true);
         }
         else{                               //***Good HP***
+            if(GetComponentInParent<AudioSource>().isPlaying){
+                GetComponentInParent<AudioSource>().Stop();
+            }
             animator.SetBool("LowHP",false);
             heartAnimator1.SetBool("LowHP",false);
             heartAnimator2.SetBool("LowHP",false);
@@ -38,11 +44,20 @@ public class HUDScript : MonoBehaviour
     public void ChangeMana(float value){
         spiritImage.fillAmount = value / maxMana;
     }
+
+    public void PlayGameOver(){
+        animator.Play("GameOver");
+        GetComponentInParent<AudioSource>().PlayOneShot(gameOverSound);
+    }
+    private void GameOver(){  
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     //****TESTING******************************************
-    float health = 100;
-    float mana = 100;
+    //float health = 100;
+    //float mana = 100;
     
-    void Update(){
+    /* void Update(){
         if(Input.GetKeyDown(KeyCode.L)){
             print("Heal Up");
             health += 5;
@@ -57,6 +72,6 @@ public class HUDScript : MonoBehaviour
             mana -= 5;
             ChangeMana(mana);
         }
-    }
+    } */
     //***********************************************************
 }

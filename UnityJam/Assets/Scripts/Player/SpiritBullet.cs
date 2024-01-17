@@ -5,7 +5,11 @@ using UnityEngine;
 
 public class SpiritBullet : MonoBehaviour
 {
+    Rigidbody2D rb;
 
+    void Awake(){
+        rb = GetComponent<Rigidbody2D>();
+    }
 
 
     // Start is called before the first frame update
@@ -15,11 +19,15 @@ public class SpiritBullet : MonoBehaviour
         
 
     }
+    void Update(){
+        
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision!= null)
+        if(collision != null)
         {
+            //if(collision.collider.gameObject.GetComponent<BasicEnemyScript>())
             Destroy(gameObject);
         }
     }

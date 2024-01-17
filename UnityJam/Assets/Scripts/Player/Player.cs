@@ -7,11 +7,10 @@ using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
+
 public class Player : MonoBehaviour
 {
-    
-
-    [SerializeField] float life;
+    [SerializeField] public float hp, maxHP;
     [SerializeField] float mana;
     [SerializeField] float sprint = 1f; //Multiplicador de la velocidad base cuando corre
     [SerializeField] float jumpForce = 5f; //Fuerza del salto
@@ -28,9 +27,14 @@ public class Player : MonoBehaviour
     bool isOnGround;   //Habilita la opcion de salto
     public LayerMask solidLayer; //Define la capa que se utilizara para saber si esta tocando un objeto solido y puede saltar
     public LayerMask playerLayer;
+    public bool defeatedByFinalBoss=false;  //Para saber si murio en el jefe final
     private bool isAlive;
     private bool receiveDamage = false;
     [SerializeField] private HUDScript hud;
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip hurtSound, jumpSound;
+    [SerializeField] private AudioClip[] attacksSounds, footstepsSounds ;
 
     [Header("Coyote Time")]
     [SerializeField] private float coyoteTime = 0.1f;
@@ -45,8 +49,8 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         isAlive = true;
-     
-
+        hud.maxHealth = maxHP;
+        audioSource = GetComponent<AudioSource>();
     }
     // Start is called before the first frame update
     void Start()
@@ -61,8 +65,6 @@ public class Player : MonoBehaviour
         //Detectamos si el Player esta vivo
         if (isAlive && !receiveDamage)
         {
-
-            isOnGround = true;
             isSprinting = false;
             Vector3 movimiento = Vector3.zero;
             if (Input.GetKey(KeyCode.A))
@@ -117,6 +119,7 @@ public class Player : MonoBehaviour
             {
                 Jump();
             }
+
             // Variable Jump
             if (Input.GetKeyUp(KeyCode.W) && !isOnGround && (rb.velocity.y > 0)){
                 rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y/2f);
@@ -139,11 +142,10 @@ public class Player : MonoBehaviour
                 }
             }
             //Detectamos si la vida del personaje es 0 y llamamos a la funci�n de muerte
-            if (life <= 0)
+            if (hp <= 0)
             {
                 Death();
-                isAlive = false;
-                
+                isAlive = false;   
             }
         }
     }
@@ -167,6 +169,7 @@ public class Player : MonoBehaviour
     {
         if (isOnGround || isCoyoteTime)
         {
+            audioSource.PlayOneShot(jumpSound);
             PlayParticles();
             if (isSprinting)
             {
@@ -193,11 +196,13 @@ public class Player : MonoBehaviour
     public void Attack()
     {
         animator.SetTrigger("Is_OnAttack");
+        audioSource.PlayOneShot(attacksSounds[Random.Range(0, attacksSounds.Length)]);
     }
 
     public void Death()
     {
         animator.SetTrigger("Is_Death");
+        hud.PlayGameOver();
     }
 
     public void EndRoll()
@@ -213,15 +218,17 @@ public class Player : MonoBehaviour
         else 
         {
             gameObject.transform.localScale = new Vector3(-2.0f, 2.0f, 2.0f);
-            
         }
     }
-    private void OnCollisionEnter2D(Collision2D collision)
+   /*  private void OnCollisionEnter2D(Collision2D collision)
     {
+        //*************DAÑO***********************
         if (collision.collider.CompareTag (enemyHitboxTag) && !receiveDamage) //Si es ataque enemigo y no esta en animación de dolor
         {
             receiveDamage = true;
             animator.SetTrigger("Damage");
+            //hp -= collision.collider.gameObject.GetComponent<BasicEnemyScript>().attackDamage;
+            hud.ChangeHealth(hp);
             if(collision.gameObject.transform.position.x > transform.position.x){ //Si enemigo esta a la derecha
                 rb.velocity = new Vector2(-hurtForce, rb.velocity.y);
             }
@@ -230,7 +237,7 @@ public class Player : MonoBehaviour
             }
             
         }
-    }
+    } */
     public void FinishHitAnimation()
     {
         receiveDamage = false;
@@ -238,5 +245,26 @@ public class Player : MonoBehaviour
 
     private void PlayParticles(){
         particles.Play();
+    }
+
+    public void TakeDamage(float damage, float positionEnemy, bool finalBoss = false){
+        if(!receiveDamage){
+            defeatedByFinalBoss = finalBoss; //Falta crear un script que nunca muera
+            receiveDamage = true;
+            animator.SetTrigger("Damage");
+            audioSource.PlayOneShot(hurtSound);
+            hp -= damage;
+            hud.ChangeHealth(hp);
+            if(positionEnemy > transform.position.x){ //Si enemigo esta a la derecha
+                rb.velocity = new Vector2(-hurtForce, rb.velocity.y);
+            }
+            else{
+                rb.velocity = new Vector2(hurtForce, rb.velocity.y);
+            }
+        }
+    }
+
+    public void PlayRandomFootStep(){
+        audioSource.PlayOneShot(footstepsSounds[Random.Range(0, footstepsSounds.Length)]);
     }
 }
