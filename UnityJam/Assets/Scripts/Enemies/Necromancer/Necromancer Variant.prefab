@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3555468951449529249}
   m_Layer: 0
-  m_Name: StaffPosition
+  m_Name: StaffPositionRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,6 +31,37 @@ Transform:
   m_Father: {fileID: 8375685581549721328}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3867778788667609412
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7524509034856446522}
+  m_Layer: 0
+  m_Name: StaffPositionLeft
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7524509034856446522
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3867778788667609412}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.107, y: 0.255, z: 0.0012186299}
+  m_LocalScale: {x: 0.17391303, y: 0.17391303, z: 0.17391303}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8375685581549721328}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &7278578480279977637
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38,6 +69,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1242673782141888594, guid: 335afd20e1ceb6a4586089d6a0b49f85, type: 3}
+      propertyPath: m_FlipX
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1242673782141888594, guid: 335afd20e1ceb6a4586089d6a0b49f85, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -166,13 +201,19 @@ MonoBehaviour:
   maxHealth: 0
   currentHealth: 0
   attackDamage: 0
-  deathTimer: 0
-  isStunned: 0
+  velocity: 0
   detectionRange: 0
+  deathTimer: 0
+  enemyPartner: {fileID: 0}
+  isStunned: 0
   speed: 0
-  playableCharacter: {fileID: 0}
+  playableCharacter: {fileID: 6429939883703773725, guid: ade852530e25a1044b7e6ec50990e5b2, type: 3}
   waypoints: []
-  staffPositionToShoot: {fileID: 2093636073988757441}
+  staffPositionToShoot:
+  - {fileID: 2093636073988757441}
+  - {fileID: 3867778788667609412}
   skeletonPrefab: {fileID: 0}
+  throwablePrefab: {fileID: 4054976584683379757, guid: 5421165b38ce17349bd3afc726410cbe, type: 3}
   summonRange: 5
   summonDelay: 5
+  attackDelay: 4
