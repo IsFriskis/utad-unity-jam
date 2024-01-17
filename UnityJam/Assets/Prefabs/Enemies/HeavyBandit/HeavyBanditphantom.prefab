@@ -155,19 +155,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 782901941623092428}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 588c1fea77bd13a45bc7c7684273c4ad, type: 3}
+  m_Script: {fileID: 11500000, guid: ab542a3601516e041809a90f4b0fb22e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 100
-  attackDamage: 50
-  velocity: 0
-  detectionRange: 5
-  deathTimer: 0
+  attackDamage: 25
+  speed: 2
+  detectionRange: 7
+  deathTimer: 10
   enemyPartner: {fileID: 0}
   isStunned: 0
-  speed: 1
-  playableCharacter: {fileID: 2987667446086879559, guid: 0e008dd3995c1ad4aa220132f97a38fd, type: 3}
+  isDead: 0
+  playableCharacter: {fileID: 0}
   waypoints: []
-  partner: {fileID: 1242673782141888601, guid: 335afd20e1ceb6a4586089d6a0b49f85, type: 3}
   isHeavy: 1

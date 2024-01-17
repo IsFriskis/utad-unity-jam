@@ -78,7 +78,6 @@ public abstract class BasicEnemyScript : MonoBehaviour
             if (currentHealth <= 0)
             {   
                GetStunned();
-                Debug.Log("Estuneado");
             }
         }
     }
@@ -96,7 +95,6 @@ public abstract class BasicEnemyScript : MonoBehaviour
         {
             enemyPartner.GetComponent<BasicEnemyScript>().Die();
             Die();
-            Debug.Log("Se murieron");
         }
 
         StartCoroutine(StunTimer());
@@ -105,9 +103,7 @@ public abstract class BasicEnemyScript : MonoBehaviour
     private IEnumerator StunTimer()
     {
         isInvulnerable = true;
-        Debug.Log("Estuneado");
         yield return new WaitForSeconds(deathTimer);
-        Debug.Log("Normal");
         isStunned = false;
         isInvulnerable = false;
 
