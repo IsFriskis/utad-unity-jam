@@ -14,7 +14,7 @@ public class SpiritOnlyZone : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider){
         if(collider.CompareTag("PlayerSpirit")){
-            if(isEntering){
+            if (isEntering){
                 inZone = true;
             }
         }
