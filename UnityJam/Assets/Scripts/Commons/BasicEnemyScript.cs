@@ -43,6 +43,12 @@ public abstract class BasicEnemyScript : MonoBehaviour
     protected CapsuleCollider2D capCol2D;
     protected SpriteRenderer spriteRenderer;
     protected Rigidbody2D rb;
+    protected AudioSource audioSource;
+
+    [SerializeField]
+    protected AudioClip hurtSound;
+    [SerializeField]
+    protected AudioClip attackSound;
 
     void Awake()
     {
@@ -50,6 +56,7 @@ public abstract class BasicEnemyScript : MonoBehaviour
         capCol2D = GetComponent<CapsuleCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
     }
     void FixedUpdate()
     {
@@ -74,7 +81,7 @@ public abstract class BasicEnemyScript : MonoBehaviour
         {
             currentHealth -= damage;
             anim.SetTrigger("isHurt");
-
+            audioSource.PlayOneShot(hurtSound);
             if (currentHealth <= 0)
             {   
                GetStunned();
@@ -124,7 +131,7 @@ public abstract class BasicEnemyScript : MonoBehaviour
         Destroy(gameObject, 5f);
     }
 
-    protected void FollowViewPlayer()
+    protected virtual void FollowViewPlayer()
     {
         Vector2 npcPosition = transform.position;
         Vector2 playerPosition = playableCharacter.transform.position;

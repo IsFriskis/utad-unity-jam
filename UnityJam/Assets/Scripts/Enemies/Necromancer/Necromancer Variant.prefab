@@ -209,6 +209,8 @@ MonoBehaviour:
   isDead: 0
   playableCharacter: {fileID: 0}
   waypoints: []
+  hurtSound: {fileID: 8300000, guid: ec6a8c2c236b5d042815c84cf95c066d, type: 3}
+  attackSound: {fileID: 8300000, guid: 580b7e5ba0a86f64e95c3c7f12a50324, type: 3}
   staffPositionToShoot:
   - {fileID: 0}
   - {fileID: 0}
