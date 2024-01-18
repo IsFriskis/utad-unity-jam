@@ -114,3 +114,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d9894755c8239e40bf1c61b94b226f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isApple: 1

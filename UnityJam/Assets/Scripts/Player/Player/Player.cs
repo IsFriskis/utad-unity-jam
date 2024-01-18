@@ -76,7 +76,6 @@ public class Player : MonoBehaviour
         {
             isSprinting = false;
             Vector3 movimiento = Vector3.zero;
-            print("Hey: "+ Input.GetAxis("Horizontal"));
             if (Input.GetKey(KeyCode.A) || Input.GetAxis("Horizontal") < 0.0f) //Move Left
             {
                 

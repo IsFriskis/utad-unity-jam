@@ -33,7 +33,6 @@ public class FadeInOut : MonoBehaviour
                 if (canvasGroup.alpha == 0)
                 {
                     fadeout = false;
-                    print("fadeoutfinish");
                 }
             }
         }
