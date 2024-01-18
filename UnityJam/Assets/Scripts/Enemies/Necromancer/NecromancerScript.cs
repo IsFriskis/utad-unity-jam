@@ -191,8 +191,4 @@ public class NecromancerScript : BasicEnemyScript
         anim.SetBool("isDead",true);
         Destroy(gameObject, 4.4f);
     }
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 }
