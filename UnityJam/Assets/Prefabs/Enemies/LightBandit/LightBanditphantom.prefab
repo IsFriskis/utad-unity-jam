@@ -31,8 +31,8 @@ Transform:
   m_GameObject: {fileID: 782901941623092428}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 15.64, y: -1.96, z: -4.2499247}
-  m_LocalScale: {x: 1, y: 0.99999994, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -161,7 +161,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 100
-  attackDamage: 25
+  attackDamage: 10
   speed: 0
   detectionRange: 5
   deathTimer: 0
@@ -170,9 +170,9 @@ MonoBehaviour:
   isDead: 0
   playableCharacter: {fileID: 0}
   waypoints: []
-  isHeavy: 0
   hurtSound: {fileID: 8300000, guid: 43e1214de0d2faa449dc4a7ab8e7abcd, type: 3}
   attackSound: {fileID: 8300000, guid: f7dfbf34bcfa159489582b70693fc9f4, type: 3}
+  isHeavy: 0
 --- !u!82 &6602590092913766526
 AudioSource:
   m_ObjectHideFlags: 0
