@@ -16,7 +16,7 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private GameObject cameraLimitLeft;
 
     void Awake(){
-        background = GetComponentInChildren<SpriteRenderer>().gameObject;
+        //background = GetComponentInChildren<SpriteRenderer>().gameObject;
     }
     void FixedUpdate()
     {

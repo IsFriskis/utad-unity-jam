@@ -62,4 +62,6 @@ public class FlyingEyeScript : MonoBehaviour
             Die(); // Check if the enemy should die after taking damage
         }
     }
+
+
 }
