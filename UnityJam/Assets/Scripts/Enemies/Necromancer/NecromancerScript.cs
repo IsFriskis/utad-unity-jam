@@ -15,6 +15,10 @@ public class NecromancerScript : BasicEnemyScript
     private GameObject throwablePrefab;
 
     [SerializeField]
+    protected AudioClip summonSound;
+
+
+    [SerializeField]
     private float summonDelay = 8f;
     [SerializeField]
     private float attackDelay = 4f;
@@ -37,6 +41,15 @@ public class NecromancerScript : BasicEnemyScript
     }
     void Update()
     {
+        
+        if (lookingLeft)
+        {
+            spriteRenderer.flipX = false;
+        }
+        else if (!lookingLeft)
+        {
+            spriteRenderer.flipX = true;
+        }
         if (!isDead)
         {
             if (isSummoning)
@@ -67,7 +80,6 @@ public class NecromancerScript : BasicEnemyScript
                     isStrafing = false;
                 }
             }
-            FollowViewPlayer();
             IALogic();
         }
     }
@@ -76,43 +88,41 @@ public class NecromancerScript : BasicEnemyScript
     {
         float distanceToPlayer = Vector3.Distance(playableCharacter.transform.position, transform.position);
         Vector3 movimiento = Vector3.zero;
-        
-        if (!isSummoning)
+        if(distanceToPlayer <= detectionRange)
         {
- 
-            isSummoning = true;
-            anim.SetTrigger("isSummoning");
-            SummonSkeleton();
-        } 
-        else if (!isAttacking)
-        {
-            isAttacking = true;
-            anim.SetTrigger("isAttacking");
-            Attack();
-        }
-        if(!isStrafing || strafeTimer < 0.5f)
-        {
-            isStrafing = true;
-            if (distanceToPlayer < 9)
+            if (!isSummoning)
             {
-                movimiento = GoBack();
-            }
-            else if (distanceToPlayer > 12)
+                isSummoning = true;
+                anim.SetTrigger("isSummoning");
+                SummonSkeleton();
+            } 
+            else if (!isAttacking)
             {
-                movimiento = Approach();
+                isAttacking = true;
+                anim.SetTrigger("isAttacking");
+                Attack();
             }
-
-
-            if (movimiento.magnitude > 1.0f)
+            if(!isStrafing || strafeTimer < 0.5f)
             {
-                movimiento.Normalize();
+                isStrafing = true;
+                if (distanceToPlayer < 9)
+                {
+                    movimiento = GoBack();
+                }
+                else if (distanceToPlayer > 12)
+                {
+                    movimiento = Approach();
+                }
+                if (movimiento.magnitude > 1.0f)
+                {
+                    movimiento.Normalize();
+                }
             }
-
-        }
-        if(strafeTimer < 1.5f)
-        {
-            anim.SetFloat("Speed", Math.Abs(movimiento.magnitude));
-            transform.Translate(movimiento);
+            if(strafeTimer < 1.5f)
+            {
+                anim.SetFloat("Speed", Math.Abs(movimiento.magnitude));
+                transform.Translate(movimiento);
+            }
         }
     }
     private Vector3 Approach()
@@ -143,7 +153,7 @@ public class NecromancerScript : BasicEnemyScript
     private void SummonSkeleton()
     {
         Vector3 spawnPosition = transform.position;
-
+        audioSource.PlayOneShot(summonSound);
         if (lookingLeft)
         {
             spawnPosition.x += 1f;
@@ -159,7 +169,8 @@ public class NecromancerScript : BasicEnemyScript
 
     public override void Attack()
     {
-        if(lookingLeft)
+        audioSource.PlayOneShot(attackSound);
+        if (lookingLeft)
         {
             Instantiate(throwablePrefab, staffPositionToShoot[0].transform.position, Quaternion.identity);
         }
@@ -190,5 +201,17 @@ public class NecromancerScript : BasicEnemyScript
         GetComponent<Rigidbody2D>().freezeRotation = true;
         anim.SetBool("isDead",true);
         Destroy(gameObject, 4.4f);
+    }
+    protected override void FollowViewPlayer()
+    {
+        Vector2 npcPosition = transform.position;
+        Vector2 playerPosition = playableCharacter.transform.position;
+
+        float distance = Vector2.Distance(npcPosition, playerPosition);
+
+        if (distance <= detectionRange)
+        {
+            lookingLeft = (playerPosition.x > npcPosition.x);
+        }
     }
 }

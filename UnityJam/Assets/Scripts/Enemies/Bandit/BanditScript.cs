@@ -17,13 +17,15 @@ namespace Assets.Scripts.Enemies.Bandit
         [SerializeField]
         private bool isHeavy = false;
 
+        
+
         protected float attackRange = 4.53f;
         // Use this for initialization
         void Start()
         {
             if (isHeavy)
             {
-                attackRange = 5f;
+                attackRange = 4.85f;
             }
         }
 
@@ -36,7 +38,7 @@ namespace Assets.Scripts.Enemies.Bandit
         {
             float distanceToPlayer = Vector3.Distance(playableCharacter.transform.position, transform.position);
             anim.SetBool("Attack", true);
-
+            audioSource.PlayOneShot(attackSound);
             if (distanceToPlayer <= attackRange)
             {
                 if(playableCharacter.GetComponent<Player>())
@@ -53,6 +55,7 @@ namespace Assets.Scripts.Enemies.Bandit
 
         public override void TakeDamage(int damage)
         {
+
             base.TakeDamage(damage);
         }
         public override void Die()

@@ -66,7 +66,8 @@ public class ArcherScript : BasicEnemyScript
     public override void Attack()
     {
         if(!isStunned && !isDead)
-        {
+        {   
+            audioSource.PlayOneShot(attackSound);
             Instantiate(arrow, arrowPosition.position, Quaternion.identity);
         }
     }
