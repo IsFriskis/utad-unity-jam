@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.Serialization;
 using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 
@@ -23,6 +22,7 @@ public class Player : MonoBehaviour
     private bool dir;
     private Animator animator;
     private bool isSprinting; //Esta corriendo
+    private bool isRolling; //Esta rodando
     bool isOnGround;   //Habilita la opcion de salto
     public LayerMask solidLayer; //Define la capa que se utilizara para saber si esta tocando un objeto solido y puede saltar
     public LayerMask playerLayer;
@@ -62,6 +62,9 @@ public class Player : MonoBehaviour
         //GameObject.DontDestroyOnLoad(this.gameObject);
         attackDamage = 20;
         attackRange = 0.35f;
+        //Para que no se vea el ratón
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     // Update is called once per frame
@@ -73,8 +76,10 @@ public class Player : MonoBehaviour
         {
             isSprinting = false;
             Vector3 movimiento = Vector3.zero;
-            if (Input.GetKey(KeyCode.A))
+            print("Hey: "+ Input.GetAxis("Horizontal"));
+            if (Input.GetKey(KeyCode.A) || Input.GetAxis("Horizontal") < 0.0f) //Move Left
             {
+                
                 if (!Spirit.GetComponent<Spirit>().rightLimit)
                 {
                     movimiento -= transform.right;
@@ -82,9 +87,9 @@ public class Player : MonoBehaviour
                     RotatePlayer(false);
                 }
             }
-            if (Input.GetKey(KeyCode.D))
+            if (Input.GetKey(KeyCode.D) || Input.GetAxis("Horizontal") > 0.0f) //Move Right
             {
-                if (!Spirit.GetComponent<Spirit>().leftLimit)
+                if (!Spirit.GetComponent<Spirit>().leftLimit )
                 {
                     movimiento += transform.right;
                     animator.SetBool("Is_Moving", true);
@@ -98,7 +103,7 @@ public class Player : MonoBehaviour
             //Desplazamos el personaje a una velocidad
             float speed = initialSpeed;
 
-            if (Input.GetKey(KeyCode.LeftControl) && (isOnGround)) 
+            if (Input.GetKey(KeyCode.LeftShift) && (isOnGround)) 
             {
                 speed = initialSpeed * sprint;
                 PlayParticles();
@@ -127,26 +132,27 @@ public class Player : MonoBehaviour
             }
 
             // Variable Jump
-            if (Input.GetKeyUp(KeyCode.W) && !isOnGround && (rb.velocity.y > 0)){
+            if ((Input.GetKeyUp(KeyCode.W) || Input.GetKeyDown(KeyCode.Joystick1Button0))&& !isOnGround && (rb.velocity.y > 0)){
                 rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y/2f);
             }
             //--------------------------------------------------------------------
             //Llamamos a la funci�n de ataque
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Joystick1Button2))
             {
                 Attack();
 
             }
-            if (movimiento.x > 0)
+            //if (movimiento.x > 0)
+            //{
+            if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.Joystick1Button1)) //ROLL
             {
-                if (Input.GetKeyDown(KeyCode.S))
-                {
-                    animator.SetTrigger("Is_Rolling");
-                    gameObject.layer = 12;
-                    //Cambiar el layer del player a rodando
-                    
-                }
+                animator.SetTrigger("Is_Rolling");
+                PlayParticles();
+                gameObject.layer = 12;
+                isRolling = true;
+                //Cambiar el layer del player a rodando
             }
+            //}
             //Detectamos si la vida del personaje es 0 y llamamos a la funci�n de muerte
             if (hp <= 0)
             {
@@ -179,7 +185,7 @@ public class Player : MonoBehaviour
             PlayParticles();
             if (isSprinting)
             {
-                rb.velocity = new Vector2(rb.velocity.x, jumpForce * sprint);
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce * 1.1f);
                 jumpBufferCounter = 0;   
             }
             else
@@ -191,7 +197,7 @@ public class Player : MonoBehaviour
         }
     }
     void JumpBufferControl(){
-        if(Input.GetKeyDown(KeyCode.W)){
+        if((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Joystick1Button0)) && !isRolling){
             jumpBufferCounter = jumpBufferTime;
         }
         else{
@@ -206,7 +212,7 @@ public class Player : MonoBehaviour
         Collider2D[] hitEnemy = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
         foreach (Collider2D enemy in hitEnemy)
         {
-            if(enemy.GetComponent<BasicEnemyScript>() != null)
+            if(enemy.GetComponent<BasicEnemyScript>() != null && enemy.CompareTag("Physical"))
             {
                 enemy.GetComponent<BasicEnemyScript>().TakeDamage(attackDamage);
                 Debug.Log("Ha golpeado");
@@ -228,6 +234,7 @@ public class Player : MonoBehaviour
     public void EndRoll()
     {
         gameObject.layer = 3;
+        isRolling = false;
     }
 
     public void RotatePlayer(bool dir)

@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using Unity.IO.LowLevel.Unsafe;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class Spirit : MonoBehaviour
 {
@@ -27,10 +28,10 @@ public class Spirit : MonoBehaviour
     public GameObject bullet;
     private GameObject fireBullet;
     [SerializeField]private int bulletSpeed;
-    [SerializeField]private float manaCost;
     [SerializeField] private float hurtForce = 2.0f;
     [SerializeField] private string enemyHitboxTag;
     [SerializeField] private HUDScript hud;
+    [SerializeField] private Rope rope;
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip nopeSound, hurtSound, jumpSound, fireBulletSound;
@@ -69,7 +70,7 @@ public class Spirit : MonoBehaviour
             isSprinting = false;
             Vector3 movimiento = Vector3.zero;
 
-            if (Input.GetKey(KeyCode.LeftArrow))
+            if (Input.GetKey(KeyCode.LeftArrow) || Input.GetAxis("Horizontal2") < 0.0f) //Move Left
             {
                 if (!leftLimit)
                 {
@@ -80,7 +81,7 @@ public class Spirit : MonoBehaviour
 
 
             }
-            if (Input.GetKey(KeyCode.RightArrow))
+            if (Input.GetKey(KeyCode.RightArrow) || Input.GetAxis("Horizontal2") > 0.0f) //Move Right
             {
                 if (!rightLimit)
                 {
@@ -98,7 +99,7 @@ public class Spirit : MonoBehaviour
             //Desplazamos el personaje a una velocidad
             float speed = initialSpeed;
 
-            if (Input.GetKey(KeyCode.LeftControl) && (isOnGround))
+            if (Input.GetKey(KeyCode.RightShift) && (isOnGround))
             {
                 speed = initialSpeed * sprint;
                 isSprinting = true;
@@ -126,24 +127,16 @@ public class Spirit : MonoBehaviour
                 Jump();
             }
             // Variable Jump
-            if (Input.GetKeyUp(KeyCode.UpArrow) && !isOnGround && (rb.velocity.y > 0)){
+            if ((Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Joystick2Button0))&& !isOnGround && (rb.velocity.y > 0)){
                 rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y/2f);
             }
             //--------------------------------------------------------------------
 
             //Llamamos a la funci�n de ataque
-            if (Input.GetKeyDown(KeyCode.RightControl))
+            if (Input.GetKeyDown(KeyCode.RightControl) || Input.GetKeyDown(KeyCode.Joystick2Button2))
             {
                 Fire();
 
-            }
-            if (movimiento.x > 0)
-            {
-                if (Input.GetKeyDown(KeyCode.DownArrow))
-                {
-                    animator.SetTrigger("Is_Rolling");
-
-                }
             }
             //Detectamos si la vida del personaje es 0 y llamamos a la funci�n de muerte
             if (mana <= 0)
@@ -151,11 +144,6 @@ public class Spirit : MonoBehaviour
                 Death();
                 isAlive = false;
 
-            }
-
-            if(Input.GetKeyDown(KeyCode.LeftControl))
-            {
-                Fire();
             }
         }
     }
@@ -179,7 +167,7 @@ public class Spirit : MonoBehaviour
         {
             audioSource.PlayOneShot(jumpSound);
             if (isSprinting){
-                rb.velocity = new Vector2(rb.velocity.x, jumpForce * sprint);
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce * 1.1f);
                 jumpBufferCounter = 0;
             }
             else
@@ -192,7 +180,7 @@ public class Spirit : MonoBehaviour
     }
 
     void JumpBufferControl(){
-        if(Input.GetKeyDown(KeyCode.UpArrow)){
+        if(Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Joystick2Button0)){
             jumpBufferCounter = jumpBufferTime;
         }
         else{
@@ -204,6 +192,7 @@ public class Spirit : MonoBehaviour
     void Death()
     {
         animator.SetTrigger("Is_Death");
+        hud.PlayGameOver();
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -216,7 +205,7 @@ public class Spirit : MonoBehaviour
             {
                 // Establecer la bandera de colisi�n en true
                 rightLimit = true;
-
+                rope.chainMaterial.color = rope.maxDistanceColor;
             }
         //}
         //if (collision.gameObject.CompareTag("Player"))
@@ -226,6 +215,7 @@ public class Spirit : MonoBehaviour
             {
                 // Establecer la bandera de colisi�n en true
                 leftLimit = true;
+                rope.chainMaterial.color = rope.maxDistanceColor;
             }
         //}
     }
@@ -239,7 +229,7 @@ public class Spirit : MonoBehaviour
             {
                 // Establecer la bandera de colisi�n en true
                 rightLimit = false;
-
+                rope.chainMaterial.color = rope.normalColor;
             }
         
 
@@ -249,8 +239,7 @@ public class Spirit : MonoBehaviour
             {
                 // Establecer la bandera de colisi�n en true
                 leftLimit = false;
-
-            
+                rope.chainMaterial.color = rope.normalColor;
             }
     }
     public void TakeDamage(float damage, float positionEnemy){
@@ -284,8 +273,6 @@ public class Spirit : MonoBehaviour
 
     public void Fire()
     {
-        if(mana >= 5){
-            mana -= manaCost;
             hud.ChangeMana(mana);
             audioSource.PlayOneShot(fireBulletSound);
             GameObject fireBullet = Instantiate(bullet, spawnPoint.position, Quaternion.identity);
@@ -300,16 +287,15 @@ public class Spirit : MonoBehaviour
                 fireBullet.transform.rotation = Quaternion.Euler(0,0,-90);
                 fireBullet.GetComponent<Rigidbody2D>().AddForce(Vector2.left * bulletSpeed, ForceMode2D.Impulse);
             }
-        }
-        else{
-            audioSource.PlayOneShot(nopeSound);
-        }
-    
     }
 
     public void FinishHitAnimation()
     {
         receiveDamage = false;
+    }
+
+     public void PlayRandomFootStep(){
+        //No hace nada, simplemente para que no de error
     }
 
 }

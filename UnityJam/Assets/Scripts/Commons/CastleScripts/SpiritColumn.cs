@@ -18,7 +18,7 @@ public class SpiritColumn : MonoBehaviour
     }
     void Update()
     {
-        if(enemies.Length == 0 && !isInAnimation){
+        if(EmptyArray() && !isInAnimation){
             animator.SetTrigger("RiseColumn");
         }
     }
@@ -31,7 +31,7 @@ public class SpiritColumn : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider){
         if(collider.CompareTag("Player") || collider.CompareTag("Spirit")){
-            if (enemies.Length != 0){
+            if (!EmptyArray()){
                 canvasCastleText.SetActive(true);
                 audioSource.PlayOneShot(nopeSound);
             }
@@ -43,6 +43,15 @@ public class SpiritColumn : MonoBehaviour
                 canvasCastleText.SetActive(false);
             }
         }
+    }
+    private bool EmptyArray(){
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            if(enemies[i]!=null){
+                return false;
+            }
+        }
+        return true;
     }
 
 }

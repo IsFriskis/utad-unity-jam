@@ -36,7 +36,7 @@ public class TitleScreenMenu : MonoBehaviour
             break;
             case 3: //EXIT
                 Application.Quit();                             //In Game
-                UnityEditor.EditorApplication.isPlaying = false; //In Editor
+                //UnityEditor.EditorApplication.isPlaying = false; //In Editor
             break;
         }
     }

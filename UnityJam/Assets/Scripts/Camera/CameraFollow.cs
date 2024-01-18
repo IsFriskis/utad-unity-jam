@@ -12,11 +12,18 @@ public class CameraFollow : MonoBehaviour
     public float rotationOffset;
     public bool canMove;
     private GameObject background;
+    [SerializeField] bool cameraHasChildBackground = true;
     [SerializeField] private GameObject cameraLimitRight;
     [SerializeField] private GameObject cameraLimitLeft;
+    [SerializeField] Transform secondTarget;
+    float backgroundSize = 1;
+
 
     void Awake(){
-        //background = GetComponentInChildren<SpriteRenderer>().gameObject;
+        if(cameraHasChildBackground){
+            background = GetComponentInChildren<SpriteRenderer>().gameObject;
+        }
+        
     }
     void FixedUpdate()
     {
@@ -46,42 +53,44 @@ public class CameraFollow : MonoBehaviour
         RopeDistance();
     }
 
-    void RopeDistance(){
-        float backgroundSize = 1;
-        /* if(rope.ropeLenght <= 17){//Camara más pequeña
-            Camera.main.orthographicSize = 10;
-        } */
-        //Mates
-        //Si 10 cuando ropeLenght == 17 y 42 cuando ropeLenght == 32
+    void RopeDistance()
+    {
         float desiredSize = 10; //= rope.ropeLenght * 42f / 32f;
-                           //-------
-        if (rope.ropeLenght < 30)
+
+        float targetY =target.localPosition.y;
+        float secondTargetY = secondTarget.localPosition.y;
+
+        float distance = targetY - secondTargetY;
+        distance = Mathf.Abs(distance);
+        //-------
+        if (distance < 7)
         {
             desiredSize = 10;
-            //cameraLimitLeft.transform.localPosition = new Vector3(-13, 0, 0);
-            //cameraLimitRight.transform.localPosition = new Vector3(13, 0, 0);
+            backgroundSize = 1;
         }
 
 
-        if ((rope.ropeLenght > 17 )&& (rope.ropeLenght<30))
+        if ((distance >8.5) && (distance <15))
         {
             desiredSize = 20;
-            //cameraLimitLeft.transform.localPosition = new Vector3(-27, 0, 0);
-            //cameraLimitRight.transform.localPosition = new Vector3(27, 0, 0);
+            backgroundSize = 2;
         }
-        if (rope.ropeLenght > 30) 
+        if (distance > 15)
         {
             desiredSize = 42;
-        //    cameraLimitLeft.transform.localPosition = new Vector3(-56, 0, 0);
-        //    cameraLimitRight.transform.localPosition = new Vector3(56, 0, 0);
+            backgroundSize = 4.5f;
         }
 
 
         Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, desiredSize, 0.01f);
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 10, 42);
-        backgroundSize = Mathf.Clamp(backgroundSize, 1, 4.5f);
-        background.transform.localScale = new Vector3(backgroundSize, backgroundSize, backgroundSize);
-
+        if (background != null)
+        {
+            float currentBackgroundSize = background.transform.localScale.x;
+            currentBackgroundSize = Mathf.Lerp(currentBackgroundSize, backgroundSize, 0.01f);
+            currentBackgroundSize = Mathf.Clamp(currentBackgroundSize, 1, 4.5f);
+            background.transform.localScale = new Vector3(currentBackgroundSize, currentBackgroundSize, currentBackgroundSize);
+        }
     }
 }
 
