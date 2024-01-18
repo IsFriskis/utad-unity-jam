@@ -199,7 +199,7 @@ MonoBehaviour:
   enemyPartner: {fileID: 0}
   isStunned: 0
   isDead: 0
-  playableCharacter: {fileID: 0}
+  playableCharacter: {fileID: 6429939883703773725, guid: ade852530e25a1044b7e6ec50990e5b2, type: 3}
   waypoints: []
-  arrow: {fileID: 0}
-  arrowPosition: {fileID: 0}
+  arrow: {fileID: 4818529107994195570, guid: 0b677f93137333346928fd4ad4f3798d, type: 3}
+  arrowPosition: {fileID: 7635853988030865350}

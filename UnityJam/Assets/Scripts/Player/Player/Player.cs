@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
 
     public int attackDamage;
     public Transform attackPoint;
-    public float attackRange = 0.35f;
+    public float attackRange;
     public LayerMask enemyLayer;
 
     private void Awake()
@@ -61,6 +61,7 @@ public class Player : MonoBehaviour
     {
         //GameObject.DontDestroyOnLoad(this.gameObject);
         attackDamage = 20;
+        attackRange = 0.35f;
     }
 
     // Update is called once per frame
@@ -205,8 +206,16 @@ public class Player : MonoBehaviour
         Collider2D[] hitEnemy = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
         foreach (Collider2D enemy in hitEnemy)
         {
-            enemy.GetComponent<BasicEnemyScript>().TakeDamage(attackDamage);
-            Debug.Log("Ha golpeado");
+            if(enemy.GetComponent<BasicEnemyScript>() != null)
+            {
+                enemy.GetComponent<BasicEnemyScript>().TakeDamage(attackDamage);
+                Debug.Log("Ha golpeado");
+            }
+            else if (enemy.GetComponentInChildren<FlyingEyeScript>() != null)
+            {
+                enemy.GetComponentInChildren<FlyingEyeScript>().TakeDamage(attackDamage);
+                Debug.Log("Ha golpeado a un flyingObject");
+            }
         }
     }
 

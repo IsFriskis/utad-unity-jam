@@ -24,10 +24,8 @@ public class FlyingEyeScript : MonoBehaviour
         attackDamage = 10;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //Flip al sprite en función de la velocidad
         if (aiPath.desiredVelocity.x >= 0.01f)
         {
             transform.localScale = new Vector3(1f, 1f, 1f);
@@ -48,7 +46,7 @@ public class FlyingEyeScript : MonoBehaviour
             Destroy(this);
             if (parentTransform != null)
             {
-                Destroy(parentTransform.gameObject, 1f); // Puedes ajustar el tiempo de espera antes de destruirlo
+                Destroy(parentTransform.gameObject, 1f);
             }
         }
     }
@@ -59,9 +57,7 @@ public class FlyingEyeScript : MonoBehaviour
         {
             currentHealth -= damage;
             animator.SetTrigger("isHurt");
-            Die(); // Check if the enemy should die after taking damage
+            Die();
         }
     }
-
-
 }
