@@ -11,6 +11,9 @@ TagManager:
   - PlayerSpirit
   - Spirit
   - Sword
+  - GhostPlayer
+  - Physical
+  - Ghost
   layers:
   - Default
   - TransparentFX

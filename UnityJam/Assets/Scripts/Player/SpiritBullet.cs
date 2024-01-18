@@ -27,7 +27,10 @@ public class SpiritBullet : MonoBehaviour
     {
         if(collision != null)
         {
-            //if(collision.collider.gameObject.GetComponent<BasicEnemyScript>())
+            if(collision.collider.gameObject.GetComponent<BasicEnemyScript>() && collision.collider.gameObject.CompareTag("Ghost"))
+            {
+                collision.gameObject.GetComponent<BasicEnemyScript>().TakeDamage(40);
+            }
             Destroy(gameObject);
         }
     }

@@ -48,6 +48,10 @@ public class Player : MonoBehaviour
     public float attackRange = 0.35f;
     public LayerMask enemyLayer;
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -59,6 +63,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        attackDamage = 30;
         GameObject.DontDestroyOnLoad(this.gameObject);
         attackDamage = 20;
     }
@@ -206,7 +211,10 @@ public class Player : MonoBehaviour
         foreach (Collider2D enemy in hitEnemy)
         {
             enemy.GetComponent<BasicEnemyScript>().TakeDamage(attackDamage);
+<<<<<<< Updated upstream
             Debug.Log("Ha golpeado");
+=======
+>>>>>>> Stashed changes
         }
     }
 
