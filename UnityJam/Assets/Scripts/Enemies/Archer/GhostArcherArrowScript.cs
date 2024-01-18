@@ -12,7 +12,7 @@ public class GhostArcherArrowScript : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        player = GameObject.FindGameObjectWithTag("GhostPlayer");
+        player = GameObject.FindGameObjectWithTag("PlayerSpirit");
         Vector3 playerTransform = player.transform.position;
         playerTransform.y += 0.4f;
 
@@ -35,10 +35,10 @@ public class GhostArcherArrowScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("GhostPlayer"))
+        if (collision.gameObject.CompareTag("PlayerSpirit"))
         {
             Debug.Log("Ha golpeado al jugador fantasmal");
-            collision.gameObject.GetComponent<Spirit>();
+            collision.gameObject.GetComponent<Spirit>().mana -= 15;
             Destroy(gameObject);
         }
     }

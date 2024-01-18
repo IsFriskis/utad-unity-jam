@@ -197,17 +197,4 @@ public class NecromancerScript : BasicEnemyScript
         Destroy(gameObject, 4.4f);
     }
 
-    void LookAtPlayer()
-    {
-        Vector3 archerPos = transform.position;
-        Vector3 knightPos = playableCharacter.transform.position;
-        if (knightPos.x <= archerPos.x)
-        {
-            gameObject.GetComponent<SpriteRenderer>().flipX = true;
-        }
-        else if (knightPos.x >= archerPos.x)
-        {
-            gameObject.GetComponent<SpriteRenderer>().flipX = false;
-        }
-    }
 }

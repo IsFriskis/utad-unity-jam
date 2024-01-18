@@ -127,11 +127,9 @@ public abstract class BasicEnemyScript : MonoBehaviour
     protected void FollowViewPlayer()
     {
         Vector2 npcPosition = transform.position;
-        Vector2 playerPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
-        Vector2 playerGhostPosition = GameObject.FindGameObjectWithTag("GhostPlayer").transform.position;
+        Vector2 playerPosition = playableCharacter.transform.position;
 
         float distance = Vector2.Distance(npcPosition, playerPosition);
-        float distanceGhost = Vector2.Distance(npcPosition, playerGhostPosition);
 
         if(distance <= detectionRange)
         {
