@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
     public bool defeatedByFinalBoss=false;  //Para saber si murio en el jefe final
     private bool isAlive;
     private bool receiveDamage = false;
-    [SerializeField] private HUDScript hud;
+    [SerializeField] public HUDScript hud;
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip hurtSound, jumpSound;

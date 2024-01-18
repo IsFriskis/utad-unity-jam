@@ -30,7 +30,7 @@ public class Spirit : MonoBehaviour
     [SerializeField]private int bulletSpeed;
     [SerializeField] private float hurtForce = 2.0f;
     [SerializeField] private string enemyHitboxTag;
-    [SerializeField] private HUDScript hud;
+    [SerializeField] public HUDScript hud;
     [SerializeField] private Rope rope;
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
