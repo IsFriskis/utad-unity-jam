@@ -42,7 +42,7 @@ public class ButtonBehaviour : MonoBehaviour
             break;
             case 3: //EXIT
                 Application.Quit();                             //In Game
-                UnityEditor.EditorApplication.isPlaying = false; //In Editor
+                //UnityEditor.EditorApplication.isPlaying = false; //In Editor
             break;
         }
     }
@@ -58,7 +58,7 @@ public class ButtonBehaviour : MonoBehaviour
         buttonImage.sprite = normalImage;
     }
     private void Update(){
-        if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Joystick1Button7)){
+        if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7)){
             if(!isGamePaused){
                 firstSelectedButton.Select();
                 animator.Play("OpenMenu");

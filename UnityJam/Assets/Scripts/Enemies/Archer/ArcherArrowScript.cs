@@ -37,8 +37,9 @@ public class ArcherArrowScript : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Ha golpeado al jugador físico");
-            collision.gameObject.GetComponent<Player>().hp -= 15;
+            Debug.Log("Ha golpeado al jugador fï¿½sico");
+            //collision.gameObject.GetComponent<Player>().hp -= 15;
+            collision.gameObject.GetComponent<Player>().TakeDamage(15, transform.position.x);
             Destroy(gameObject);
         }
     }

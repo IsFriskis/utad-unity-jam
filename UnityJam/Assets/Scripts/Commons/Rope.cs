@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Rope : MonoBehaviour
 {
-    [SerializeField] Color normalColor, maxDistanceColor;
-    [SerializeField] Material chainMaterial;
+    [SerializeField] public Color normalColor, maxDistanceColor;
+    [SerializeField] public Material chainMaterial;
     [SerializeField] float max_Distance; //Distancia apartir de la cual consideramos que los personajes estan muy separados.
     public LineRenderer line; //El Objeto debe tener un componente LineRender 
     public Transform posWarrior; // Posici�n desde donde nace la cuerda
@@ -28,13 +28,13 @@ public class Rope : MonoBehaviour
         //Calcula la tama�o actual de la cuerda
         ropeLenght = (posSpirit.position - posWarrior.position).magnitude;
        //Bucle que define que ocurre cuando se supera la distancia m�xima entre personajes
-        if (ropeLenght > max_Distance)
+        /* if (ropeLenght > max_Distance)
         {
             chainMaterial.color = maxDistanceColor;
         }
         else
         {
             chainMaterial.color = normalColor;
-        }
+        } */
     }
 }

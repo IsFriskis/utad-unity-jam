@@ -8,7 +8,8 @@ public class CollisionWithPlayer : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            collision.gameObject.GetComponent<Player>().hp -= 10;
+            //collision.gameObject.GetComponent<Player>().hp -= 10;
+            collision.gameObject.GetComponent<Player>().TakeDamage(10, transform.position.x);
         }
     }
 }

@@ -38,7 +38,8 @@ public class GhostArcherArrowScript : MonoBehaviour
         if (collision.gameObject.CompareTag("PlayerSpirit"))
         {
             Debug.Log("Ha golpeado al jugador fantasmal");
-            collision.gameObject.GetComponent<Spirit>().mana -= 15;
+            //collision.gameObject.GetComponent<Spirit>().mana -= 15;
+            collision.gameObject.GetComponent<Spirit>().TakeDamage(15, transform.position.x);
             Destroy(gameObject);
         }
     }

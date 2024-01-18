@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 953883166003574714}
   - component: {fileID: 953883166003574715}
   - component: {fileID: 953883166003574719}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: ArcherG
   m_TagString: Ghost
   m_Icon: {fileID: 0}
@@ -170,6 +170,8 @@ MonoBehaviour:
   isDead: 0
   playableCharacter: {fileID: 2987667446086879559, guid: 0e008dd3995c1ad4aa220132f97a38fd, type: 3}
   waypoints: []
+  hurtSound: {fileID: 0}
+  attackSound: {fileID: 0}
   arrow: {fileID: 4818529107994195570, guid: 59e23b7cf5a58bf4e83932beb8f4e2aa, type: 3}
   arrowPosition: {fileID: 953883166102478973}
 --- !u!1 &953883166102478970
@@ -181,7 +183,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 953883166102478973}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: GhostArrowSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}

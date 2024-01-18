@@ -74,7 +74,7 @@ MonoBehaviour:
   tilemapSpiritOnly: {fileID: 0}
   inZone: 0
   isEntering: 0
-  layer2: 11
+  layer2: 8
 --- !u!1 &1417210574
 GameObject:
   m_ObjectHideFlags: 0
