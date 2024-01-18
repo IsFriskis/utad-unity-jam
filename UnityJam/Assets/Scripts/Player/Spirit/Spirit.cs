@@ -211,7 +211,6 @@ public class Spirit : MonoBehaviour
         // Verificar si estamos colisionando con un objeto que tiene el tag especificado
         //if (collision.gameObject.CompareTag("Player"))
         //{
-            print("HOla: "+collision.collider.gameObject.name);
             Collider2D colisionado = collision.collider;
             if (colisionado.CompareTag("rightLimit"))
             {

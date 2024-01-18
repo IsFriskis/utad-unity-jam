@@ -19,18 +19,20 @@ public class SpiritBullet : MonoBehaviour
         
 
     }
-    void Update()
-    {
+    void Update(){
         
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.gameObject.GetComponent<BasicEnemyScript>())
+        if(collision != null)
         {
-            collision.gameObject.GetComponent<BasicEnemyScript>().TakeDamage(40);
+            if(collision.collider.gameObject.GetComponent<BasicEnemyScript>() && collision.collider.gameObject.CompareTag("Ghost"))
+            {
+                collision.gameObject.GetComponent<BasicEnemyScript>().TakeDamage(40);
+            }
+            Destroy(gameObject);
         }
-        Destroy(gameObject);
     }
 
 }

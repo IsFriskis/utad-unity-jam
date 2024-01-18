@@ -17,15 +17,14 @@ namespace Assets.Scripts.Enemies.Bandit
         [SerializeField]
         private bool isHeavy = false;
 
-        protected float attackRange = 4.35f;
+        protected float attackRange = 4.53f;
         // Use this for initialization
         void Start()
         {
             if (isHeavy)
             {
-                attackRange = 4.55f;
+                attackRange = 5f;
             }
-            Attack();
         }
 
         // Update is called once per frame
@@ -35,8 +34,21 @@ namespace Assets.Scripts.Enemies.Bandit
         }
         public override void Attack()
         {
-            //playableCharacter.GetComponent<PlayableCharacterScript>().TakeDamage(attackDamage);
+            float distanceToPlayer = Vector3.Distance(playableCharacter.transform.position, transform.position);
             anim.SetBool("Attack", true);
+
+            if (distanceToPlayer <= attackRange)
+            {
+                if(playableCharacter.GetComponent<Player>())
+                {
+                    playableCharacter.GetComponent<Player>().TakeDamage(attackDamage, transform.position.x);
+                }
+                else if (playableCharacter.GetComponent<Spirit>())
+                {
+                    playableCharacter.GetComponent<Spirit>().TakeDamage(attackDamage, transform.position.x);
+                }
+            }
+            
         }
 
         public override void TakeDamage(int damage)
@@ -53,6 +65,7 @@ namespace Assets.Scripts.Enemies.Bandit
             {
                 Vector3 movimiento = Vector3.zero;
                 float distanceToPlayer = Vector3.Distance(playableCharacter.transform.position, transform.position);
+
                 //Si el jugador esta en rango de deteccion
                 if (distanceToPlayer <= detectionRange)
                 {

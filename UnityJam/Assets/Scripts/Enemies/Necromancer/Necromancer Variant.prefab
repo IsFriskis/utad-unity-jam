@@ -198,22 +198,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4b73ea51781c514599141d3d248d924, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 0
-  currentHealth: 0
-  attackDamage: 0
-  velocity: 0
-  detectionRange: 0
+  maxHealth: 500
+  currentHealth: 500
+  attackDamage: 30
+  speed: 5
+  detectionRange: 50
   deathTimer: 0
   enemyPartner: {fileID: 0}
   isStunned: 0
-  speed: 0
-  playableCharacter: {fileID: 6429939883703773725, guid: ade852530e25a1044b7e6ec50990e5b2, type: 3}
+  isDead: 0
+  playableCharacter: {fileID: 0}
   waypoints: []
   staffPositionToShoot:
-  - {fileID: 2093636073988757441}
-  - {fileID: 3867778788667609412}
+  - {fileID: 0}
+  - {fileID: 0}
   skeletonPrefab: {fileID: 0}
   throwablePrefab: {fileID: 4054976584683379757, guid: 5421165b38ce17349bd3afc726410cbe, type: 3}
-  summonRange: 5
   summonDelay: 5
   attackDelay: 4
+  strafeDelay: 2

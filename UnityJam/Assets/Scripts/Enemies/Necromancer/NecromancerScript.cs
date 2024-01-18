@@ -15,9 +15,6 @@ public class NecromancerScript : BasicEnemyScript
     private GameObject throwablePrefab;
 
     [SerializeField]
-    private float summonRange = 5f;
-
-    [SerializeField]
     private float summonDelay = 8f;
     [SerializeField]
     private float attackDelay = 4f;
@@ -37,7 +34,6 @@ public class NecromancerScript : BasicEnemyScript
         maxHealth = 500;
         currentHealth = maxHealth;
         attackDamage = 30;
-        speed = 1;
     }
     void Update()
     {
@@ -97,11 +93,11 @@ public class NecromancerScript : BasicEnemyScript
         if(!isStrafing || strafeTimer < 0.5f)
         {
             isStrafing = true;
-            if (distanceToPlayer < 7)
+            if (distanceToPlayer < 9)
             {
                 movimiento = GoBack();
             }
-            else if (distanceToPlayer > 9)
+            else if (distanceToPlayer > 12)
             {
                 movimiento = Approach();
             }
@@ -115,7 +111,6 @@ public class NecromancerScript : BasicEnemyScript
         }
         if(strafeTimer < 1.5f)
         {
-            Debug.Log("Strafe");
             anim.SetFloat("Speed", Math.Abs(movimiento.magnitude));
             transform.Translate(movimiento);
         }
@@ -196,5 +191,8 @@ public class NecromancerScript : BasicEnemyScript
         anim.SetBool("isDead",true);
         Destroy(gameObject, 4.4f);
     }
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 }

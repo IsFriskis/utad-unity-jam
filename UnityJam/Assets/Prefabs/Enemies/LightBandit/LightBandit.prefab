@@ -161,13 +161,13 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 10
   attackDamage: 25
-  velocity: 1.5
+  speed: 2
   detectionRange: 5
   deathTimer: 0
   enemyPartner: {fileID: 0}
   isStunned: 0
   isDead: 0
-  speed: 2
   playableCharacter: {fileID: 0}
-  waypoints: []
+  waypoints:
+  - {fileID: 3751611794143972781, guid: 58b56ef75dfdcf04ba2052fc383e6b42, type: 3}
   isHeavy: 0

@@ -121,7 +121,7 @@ public abstract class BasicEnemyScript : MonoBehaviour
     {
         isDead = true;
         anim.SetBool("isDead",true);
-        Destroy(gameObject, 10f);
+        Destroy(gameObject, 5f);
     }
 
     protected void FollowViewPlayer()

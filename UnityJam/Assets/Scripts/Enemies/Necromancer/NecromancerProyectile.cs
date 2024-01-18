@@ -11,6 +11,8 @@ namespace Assets.Scripts.Enemies.Necromancer
 
         private float proyectileSpeed = 7f;
 
+        private float proyectileDamage = 10f;
+
         private Animator anim;
         private SpriteRenderer spriteRenderer;
 
@@ -43,8 +45,7 @@ namespace Assets.Scripts.Enemies.Necromancer
         {
             if (collision.gameObject.name == "Player")
             {
-                //DAñito
-                //playableCharacter.GetComponent<Player>().;
+                playableCharacter.GetComponent<Player>().TakeDamage(proyectileDamage, transform.position.x);
             }
                 proyectileSpeed = 0;
                 GetComponent<Rigidbody2D>().velocity = Vector2.zero;
