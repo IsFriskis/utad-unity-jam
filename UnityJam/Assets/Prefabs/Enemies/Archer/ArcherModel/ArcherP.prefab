@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7635853988030865350}
-  m_Layer: 7
+  m_Layer: 10
   m_Name: ArrowSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 7635853988475130672}
   - component: {fileID: 7635853988475130677}
   - component: {fileID: 7635853988475130676}
-  m_Layer: 7
+  m_Layer: 10
   m_Name: ArcherP
   m_TagString: Physical
   m_Icon: {fileID: 0}
@@ -193,12 +193,12 @@ MonoBehaviour:
   maxHealth: 0
   currentHealth: 0
   attackDamage: 0
-  velocity: 0
+  speed: 0
   detectionRange: 0
   deathTimer: 0
   enemyPartner: {fileID: 0}
   isStunned: 0
-  speed: 0
+  isDead: 0
   playableCharacter: {fileID: 0}
   waypoints: []
   arrow: {fileID: 0}

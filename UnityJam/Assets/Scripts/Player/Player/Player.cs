@@ -43,6 +43,11 @@ public class Player : MonoBehaviour
     [SerializeField] private float jumpBufferTime = 0.1f;
     private float jumpBufferCounter;
 
+    public int attackDamage;
+    public Transform attackPoint;
+    public float attackRange = 0.35f;
+    public LayerMask enemyLayer;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -55,6 +60,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         GameObject.DontDestroyOnLoad(this.gameObject);
+        attackDamage = 20;
     }
 
     // Update is called once per frame
@@ -196,6 +202,12 @@ public class Player : MonoBehaviour
     {
         animator.SetTrigger("Is_OnAttack");
         audioSource.PlayOneShot(attacksSounds[Random.Range(0, attacksSounds.Length)]);
+        Collider2D[] hitEnemy = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
+        foreach (Collider2D enemy in hitEnemy)
+        {
+            enemy.GetComponent<BasicEnemyScript>().TakeDamage(attackDamage);
+            Debug.Log("Ha golpeado");
+        }
     }
 
     public void Death()
