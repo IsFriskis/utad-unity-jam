@@ -21,7 +21,7 @@ public class NecromancerScript : BasicEnemyScript
     [SerializeField]
     private float summonDelay = 8f;
     [SerializeField]
-    private float attackDelay = 4f;
+    private float attackDelay = 7f;
     [SerializeField]
     private float strafeDelay = 2f;
 

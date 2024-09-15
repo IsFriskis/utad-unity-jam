@@ -7,7 +7,7 @@ public class ArcherScript : BasicEnemyScript
 {
     public GameObject arrow;
     public Transform arrowPosition;
-    private float attackDelay = 7f;
+    private float attackDelay = 5f;
     private float attackTimer = 0f;
     private bool isAttacking = true;
 
@@ -18,7 +18,6 @@ public class ArcherScript : BasicEnemyScript
         attackDamage = 15;
         deathTimer = 15f;
         detectionRange = 10;
-        
     }
 
     void Update()
@@ -28,13 +27,17 @@ public class ArcherScript : BasicEnemyScript
         {
             if (isAttacking)
             {
+                anim.SetBool("isAttacking", false);
                 attackTimer += Time.deltaTime;
                 if (attackTimer >= attackDelay)
                 {
-                    attackTimer = 0;
+                    print("AttackTImer >= attackDelay");
+                    attackTimer = 0f;
+                    
                     isAttacking = false;
                 }
             }
+            print("Timer Loquete: "+attackTimer);
             IALogic();
         }
     }
@@ -51,15 +54,18 @@ public class ArcherScript : BasicEnemyScript
     public override void IALogic()
     {
         float distanceToPlayer = Vector3.Distance(playableCharacter.transform.position, transform.position);
+        //print("Disntace: "+distanceToPlayer);
         if (distanceToPlayer <= detectionRange && !isAttacking)
         {
+            print("IsAttacking true*********************************************");
             isAttacking = true;
             anim.SetBool("isAttacking", true);
-            Attack();
+            //Attack();
         }
-        if(distanceToPlayer >= detectionRange && !isAttacking)
+        else if(distanceToPlayer > detectionRange && !isAttacking)
         {
-            isAttacking= false;
+            print("IsAttacking false");
+            isAttacking = false;
             anim.SetBool("isAttacking", false);
         }
     }
@@ -67,6 +73,7 @@ public class ArcherScript : BasicEnemyScript
     {
         if(!isStunned && !isDead)
         {   
+            print("The shit");
             audioSource.PlayOneShot(attackSound);
             Instantiate(arrow, arrowPosition.position, Quaternion.identity);
         }
